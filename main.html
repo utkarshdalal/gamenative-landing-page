@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameNative - Play Steam Games on Android</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200;12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background: #09090B;
+            --foreground: #FAFAFA;
+            --card: #09090B;
+            --card-foreground: #fafafa;
+            --popover: #09090B;
+            --popover-foreground: #fafafa;
+            --primary: #a21caf;
+            --primary-foreground: #fafafa;
+            --secondary: #27272A;
+            --secondary-foreground: #fafafa;
+            --muted: #27272A;
+            --muted-foreground: #94969c;
+            --accent: #06B6D4;
+            --accent-foreground: #FAFAFA;
+            --destructive: #7F1D1D;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--background);
+            color: var(--foreground);
+            line-height: 1.6;
+            overflow-x: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 400px;
+            padding: 0 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 24px;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(162, 28, 175, 0.3);
+        }
+
+        .title {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .description {
+            font-size: 18px;
+            color: var(--muted-foreground);
+            margin-bottom: 40px;
+            max-width: 320px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border-radius: 16px;
+            border: none;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 18px;
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #8b1a9c);
+            color: var(--primary-foreground);
+            box-shadow: 0 4px 15px rgba(162, 28, 175, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(162, 28, 175, 0.4);
+        }
+
+        .background-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .glow-1 {
+            position: absolute;
+            top: 20%;
+            left: 30%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(162, 28, 175, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .glow-2 {
+            position: absolute;
+            bottom: 20%;
+            right: 30%;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .version {
+            position: absolute;
+            bottom: -60px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 14px;
+            color: var(--muted-foreground);
+        }
+    </style>
+</head>
+<body>
+    <div class="background-glow">
+        <div class="glow-1"></div>
+        <div class="glow-2"></div>
+    </div>
+
+    <div class="container">
+        <img src="/logo.png" alt="GameNative Logo" class="logo">
+        <h1 class="title">GameNative</h1>
+        <p class="description">Play your Steam games on Android. Anywhere, anytime.</p>
+        <a href="#" class="btn btn-primary">Download</a>
+        <div class="version">v1.0.0 • Android 8.0+</div>
+    </div>
+</body>
+</html>
