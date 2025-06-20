@@ -11,19 +11,13 @@
         :root {
             --background: #09090B;
             --foreground: #FAFAFA;
-            --card: #09090B;
-            --card-foreground: #fafafa;
-            --popover: #09090B;
-            --popover-foreground: #fafafa;
             --primary: #a21caf;
             --primary-foreground: #fafafa;
             --secondary: #27272A;
             --secondary-foreground: #fafafa;
-            --muted: #27272A;
             --muted-foreground: #94969c;
             --accent: #06B6D4;
             --accent-foreground: #FAFAFA;
-            --destructive: #7F1D1D;
         }
 
         * {
@@ -38,161 +32,266 @@
             color: var(--foreground);
             line-height: 1.6;
             overflow-x: hidden;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: relative;
+            min-height: 100vh;
         }
 
         .container {
-            max-width: 400px;
-            padding: 0 20px;
-            text-align: center;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem;
             position: relative;
+            z-index: 2;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
         }
 
         .logo {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 24px;
-            border-radius: 24px;
-            box-shadow: 0 8px 32px rgba(162, 28, 175, 0.3);
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(162, 28, 175, 0.4);
+            backdrop-filter: blur(10px);
         }
 
-        .title {
-            font-size: 36px;
+        h1 {
+            font-size: 2.5rem;
             font-weight: 800;
-            margin-bottom: 16px;
+            margin-bottom: 1rem;
             background: linear-gradient(135deg, var(--primary), var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            line-height: 1.2;
         }
 
-        .description {
-            font-size: 18px;
+        .subhead {
+            font-size: 1.2rem;
             color: var(--muted-foreground);
-            margin-bottom: 40px;
-            max-width: 320px;
+            margin-bottom: 2rem;
+            max-width: 600px;
             margin-left: auto;
             margin-right: auto;
         }
 
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
         .btn {
-            padding: 16px 32px;
-            border-radius: 16px;
-            border: none;
-            font-family: inherit;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 18px;
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
             text-decoration: none;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn:hover::before {
-            left: 100%;
+            padding: 0.75rem 1.5rem;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .btn-primary {
             background: linear-gradient(135deg, var(--primary), #8b1a9c);
             color: var(--primary-foreground);
-            box-shadow: 0 4px 15px rgba(162, 28, 175, 0.3);
+            box-shadow: 0 4px 15px rgba(162, 28, 175, 0.4);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(162, 28, 175, 0.4);
+            box-shadow: 0 8px 25px rgba(162, 28, 175, 0.6);
         }
 
         .btn-secondary {
-            background: var(--secondary);
-            color: var(--secondary-foreground);
-            margin-top: 16px;
-            box-shadow: 0 4px 15px rgba(39, 39, 42, 0.3);
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
         }
 
         .btn-secondary:hover {
+            background: rgba(6, 182, 212, 0.1);
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(39, 39, 42, 0.4);
         }
 
-        .buttons-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .features {
+            margin-top: 2rem;
+            font-size: 1rem;
+            line-height: 1.6;
         }
 
-        .background-glow {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            pointer-events: none;
+        .features-card {
+            padding: 2rem;
+            background: rgba(39, 39, 42, 0.5);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .glow-1 {
-            position: absolute;
-            top: 20%;
-            left: 30%;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(162, 28, 175, 0.2) 0%, transparent 70%);
-            border-radius: 50%;
+        .feature-item {
+            margin: 1rem 0;
+            font-size: 1rem;
+            line-height: 1.6;
         }
 
-        .glow-2 {
-            position: absolute;
-            bottom: 20%;
-            right: 30%;
-            width: 250px;
-            height: 250px;
-            background: radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, transparent 70%);
-            border-radius: 50%;
+        .feature-item:first-child {
+            margin-top: 0;
         }
 
-        .version {
-            position: absolute;
-            bottom: -60px;
-            left: 0;
-            right: 0;
+        .feature-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .feature-item a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .feature-item a:hover {
+            color: var(--primary);
+        }
+
+        .feature-item strong {
+            color: var(--accent);
+        }
+
+        .version-info {
             text-align: center;
+            margin-top: 3rem;
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: var(--muted-foreground);
+            background: rgba(39, 39, 42, 0.3);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .footer {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            background: rgba(39, 39, 42, 0.8);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             font-size: 14px;
             color: var(--muted-foreground);
+        }
+
+        .gameaway-logo {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.3s ease;
+        }
+
+        .gameaway-link {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .gameaway-link:hover {
+            color: var(--primary);
+        }
+
+        .gameaway-link:hover .gameaway-logo {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .subhead {
+                font-size: 1.1rem;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="background-glow">
-        <div class="glow-1"></div>
-        <div class="glow-2"></div>
-    </div>
-
     <div class="container">
-        <img src="icon-512.png" alt="GameNative Logo" class="logo">
-        <h1 class="title">GameNative</h1>
-        <p class="description">Play your Steam games on Android. Anywhere, anytime.</p>
-        <div class="buttons-container">
-            <a href="https://github.com/utkarshdalal/GameNative/releases/download/gamenative-v0.2.6/gamenative-v0.2.6.apk" class="btn btn-primary">Download</a>
-            <a href="https://discord.gg/2hKv4VfZfE" class="btn btn-secondary">Join Discord</a>
+        <header>
+            <img src="icon-512.png" alt="GameNative Logo" class="logo">
+            <h1>GameNative</h1>
+            <h3>Your Steam Library. On Android. Natively.</h3>
+            <p class="subhead">Play your favorite PC games directly on your phone—no cloud PCs, no subscriptions, no lag. Just your games, running locally.</p>
+            
+            <div class="buttons">
+                <a href="https://github.com/utkarshdalal/GameNative/releases/download/gamenative-v0.2.6/gamenative-v0.2.6.apk" class="btn btn-primary">
+                    Download Now
+                </a>
+                <a href="https://discord.gg/2hKv4VfZfE" class="btn btn-secondary">
+                    Join the Discord
+                </a>
+            </div>
+        </header>
+
+        <div class="features">
+            <div class="features-card">
+                <div class="feature-item">
+                    <strong>Safe Steam Login</strong> — Your credentials never leave your device. We don't store or transmit them.
+                </div>
+                
+                <div class="feature-item">
+                    <strong>No Cloud Required</strong> — GameNative runs games using your Android's own hardware. No external PC or stream server needed.
+                </div>
+                
+                <div class="feature-item">
+                    <strong>Built on <a href="https://github.com/oxters168/Pluvia" target="_blank">Pluvia</a> & <a href="https://github.com/brunodev85/winlator" target="_blank">Winlator</a></strong> — Powered by open-source tech, improved for usability and performance.
+                </div>
+                
+                <div class="feature-item">
+                    <strong>Made by the team behind <a href="https://www.gameaway.in" target="_blank">GameAway</a></strong> — Experts in high-performance gaming experiences that don't break the bank.
+                </div>
+                
+                <div class="feature-item">
+                    <strong>Featured in <a href="https://www.androidauthority.com/gamenative-play-steam-games-android-3568963/" target="_blank">Android Authority</a></strong> - "GameNative is the closest thing to plug-and-play Windows emulation on Android."
+                </div>
+            </div>
         </div>
-        <div class="version">v0.2.6 • Android 8.0+</div>
+
+        <div class="version-info">
+            v0.2.6 • Android 8.0+ • Built for gamers, by gamers
+        </div>
+
+        <footer class="footer">
+            <div class="footer-content">
+                Made by the creators of 
+                <a href="https://gameaway.in" class="gameaway-link" target="_blank" rel="noopener noreferrer">
+                    <img src="gameaway-logo.png" alt="GameAway Logo" class="gameaway-logo">
+                    GameAway
+                </a>
+            </div>
+        </footer>
     </div>
 </body>
 </html>
