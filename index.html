@@ -44,9 +44,15 @@
             z-index: 2;
         }
 
-        header {
+        /* Hero Section */
+        .hero {
             text-align: center;
-            margin-bottom: 3rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
         }
 
         .logo {
@@ -122,8 +128,62 @@
             transform: translateY(-2px);
         }
 
+        /* Animated Arrow */
+        .scroll-arrow {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
+            animation: bounce 2s infinite;
+            transition: all 0.3s ease;
+        }
+
+        .scroll-arrow:hover {
+            transform: translateX(-50%) scale(1.1);
+        }
+
+        .arrow-icon {
+            width: 24px;
+            height: 24px;
+            stroke: var(--accent);
+            stroke-width: 2;
+            fill: none;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 4rem 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .features-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
         .features {
-            margin-top: 2rem;
             font-size: 1rem;
             line-height: 1.6;
         }
@@ -194,7 +254,7 @@
         }
 
         .gameaway-logo {
-            width: 100%;
+            width: 24px;
             height: 24px;
             transition: transform 0.3s ease;
         }
@@ -234,12 +294,17 @@
                 max-width: 280px;
                 justify-content: center;
             }
+
+            .features-title {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
+        <!-- Hero Section -->
+        <section class="hero">
             <img src="icon-512.png" alt="GameNative Logo" class="logo">
             <h1>GameNative</h1>
             <h3>Your Steam Library. On Android. Natively.</h3>
@@ -253,35 +318,42 @@
                     Join the Discord
                 </a>
             </div>
-        </header>
 
-        <div class="features">
-            <div class="features-card">
-                <div class="feature-item">
-                    <strong>Safe Steam Login</strong> — Your credentials never leave your device. We don't store or transmit them.
-                </div>
-                
-                <div class="feature-item">
-                    <strong>No Cloud Required</strong> — GameNative runs games using your Android's own hardware. No external PC or stream server needed.
-                </div>
-                
-                <div class="feature-item">
-                    <strong>Built on <a href="https://github.com/oxters168/Pluvia" target="_blank">Pluvia</a> & <a href="https://github.com/brunodev85/winlator" target="_blank">Winlator</a></strong> — Powered by open-source tech, improved for usability and performance.
-                </div>
-                
-                <div class="feature-item">
-                    <strong>Made by the team behind <a href="https://www.gameaway.in" target="_blank">GameAway</a></strong> — Experts in high-performance gaming experiences that don't break the bank.
-                </div>
-                
-                <div class="feature-item">
-                    <strong>Featured in <a href="https://www.androidauthority.com/gamenative-play-steam-games-android-3568963/" target="_blank">Android Authority</a></strong> - "GameNative is the closest thing to plug-and-play Windows emulation on Android."
+            <div class="scroll-arrow" onclick="document.querySelector('.features-section').scrollIntoView({behavior: 'smooth'})">
+                <svg class="arrow-icon" viewBox="0 0 24 24">
+                    <path d="M7 10l5 5 5-5"/>
+                </svg>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section">
+            <h2 class="features-title">Why GameNative?</h2>
+            
+            <div class="features">
+                <div class="features-card">
+                    <div class="feature-item">
+                        <strong>Safe Steam Login</strong> — Your credentials never leave your device. We don't store or transmit them.
+                    </div>
+                    
+                    <div class="feature-item">
+                        <strong>No Cloud Required</strong> — GameNative runs games using your Android's own hardware. No external PC or stream server needed.
+                    </div>
+                    
+                    <div class="feature-item">
+                        <strong>Built on <a href="https://github.com/oxters168/Pluvia" target="_blank">Pluvia</a> & <a href="https://github.com/brunodev85/winlator" target="_blank">Winlator</a></strong> — Powered by open-source tech, improved for usability and performance.
+                    </div>
+                    
+                    <div class="feature-item">
+                        <strong>Featured in <a href="https://www.androidauthority.com/gamenative-play-steam-games-android-3568963/" target="_blank">Android Authority</a></strong> - "GameNative is the closest thing to plug-and-play Windows emulation on Android."
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="version-info">
-            v0.2.6 • Android 8.0+ • Built for gamers, by gamers
-        </div>
+            <div class="version-info">
+                v0.2.6 • Android 8.0+
+            </div>
+        </section>
     </div>
 </body>
 </html>
