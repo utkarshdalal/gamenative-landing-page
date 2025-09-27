@@ -25,7 +25,7 @@ export default function DriversPage() {
             Driver Downloads
           </h1>
           <p className="text-gray-300 text-lg">
-            Download the latest arm64ec graphics drivers for Bionic builds or for glibc Winlator using Vortek.
+            Download the latest ARM64 graphics drivers for Winlator Bionic or other ARM64-based emulators.
           </p>
         </div>
 
