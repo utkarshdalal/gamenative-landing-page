@@ -35,8 +35,7 @@ export default function DriversPage() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-xl font-semibold text-white mb-2">{driver.name}</h3>
-                    <p className="text-gray-400 text-sm">Filename: {driver.filename}</p>
+                    <h3 className="text-xl font-semibold text-white break-all">{driver.name}</h3>
                   </div>
                   <Button
                     asChild
