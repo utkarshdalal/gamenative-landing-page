@@ -1,30 +1,39 @@
-# Pluvia Redesign
+# GameNative Website
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+A modern Next.js website for GameNative - play your Steam library natively on Android.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/utkarsh-gameawayins-projects/v0-pluvia-redesign)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/JAud0C2tz6s)
+## Deployment to GitHub Pages
 
-## Overview
+### Option 1: Automatic Deployment (Recommended)
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+1. Push this code to your GitHub repository
+2. Go to your repository settings → Pages
+3. Set source to "GitHub Actions"
+4. Update `next.config.mjs` and replace `your-repo-name` with your actual repository name
+5. Push changes - the site will automatically deploy via GitHub Actions
 
-## Deployment
+### Option 2: Manual Deployment
 
-Your project is live at:
+1. Update `next.config.mjs` and replace `your-repo-name` with your actual repository name
+2. Run the build command:
+   \`\`\`bash
+   npm run build
+   \`\`\`
+3. The static files will be generated in the `out` folder
+4. Upload the contents of the `out` folder to your GitHub Pages repository
 
-**[https://vercel.com/utkarsh-gameawayins-projects/v0-pluvia-redesign](https://vercel.com/utkarsh-gameawayins-projects/v0-pluvia-redesign)**
+### Local Development
 
-## Build your app
+\`\`\`bash
+npm install
+npm run dev
+\`\`\`
 
-Continue building your app on:
+Open [http://localhost:3000](http://localhost:3000) to view the site locally.
 
-**[https://v0.dev/chat/projects/JAud0C2tz6s](https://v0.dev/chat/projects/JAud0C2tz6s)**
+## Features
 
-## How It Works
-
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+- Modern responsive design
+- Downloads page with dynamic driver listing
+- Static export compatible with GitHub Pages
+- Automatic deployment via GitHub Actions
