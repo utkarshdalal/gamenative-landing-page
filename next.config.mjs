@@ -1,12 +1,13 @@
 /** @type {import('next').NextConfig} */
+const isGhPages = false
 const nextConfig = {
   output: 'export',
   trailingSlash: true,
   images: {
     unoptimized: true
   },
-  basePath: process.env.NODE_ENV === 'production' ? '/gamenative-landing-page' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/gamenative-landing-page/' : '',
+  basePath: isGhPages ? '/gamenative-landing-page' : '',
+  assetPrefix: isGhPages ? '/gamenative-landing-page/' : '',
   eslint: {
     ignoreDuringBuilds: true,
   },
