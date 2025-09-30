@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Download, MessageCircle, Coffee, ChevronDown } from "lucide-react"
+import { Download, MessageCircle, Coffee, ChevronDown, Wrench, Car } from "lucide-react"
 import Link from "next/link"
 
 export default function GameNativePage() {
@@ -48,8 +48,20 @@ export default function GameNativePage() {
               size="lg"
               className="border-cyan-500 text-cyan-400 hover:bg-cyan-500/10 font-semibold py-4 text-lg bg-transparent"
             >
+              <Link href="/compatibility">
+                <Wrench className="w-5 h-5 mr-2" />
+                Compatibility
+              </Link>
+            </Button>
+
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="border-cyan-500 text-cyan-400 hover:bg-cyan-500/10 font-semibold py-4 text-lg bg-transparent"
+            >
               <Link href="/drivers">
-                <Download className="w-5 h-5 mr-2" />
+                <Car className="w-5 h-5 mr-2" />
                 Graphics Drivers
               </Link>
             </Button>
