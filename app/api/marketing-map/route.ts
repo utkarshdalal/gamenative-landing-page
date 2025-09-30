@@ -73,20 +73,19 @@ function decodeCsvBuffer(buf: Buffer): string {
   return text.replace(/\u0000/g, "")
 }
 
-async function buildMapping(requestedModels: string[]) {
+async function buildMapping(requestedModels: string[], req: Request) {
   const desiredNormSet = new Set(requestedModels.map((m) => normalize(m)))
   const desiredLooseSet = new Set(requestedModels.map((m) => normalizeLoose(m)))
 
-  let csvText: string
-  const rootPath = path.join(process.cwd(), "supported_devices.csv")
-  try {
-    const buf = await readFile(rootPath)
-    csvText = decodeCsvBuffer(buf)
-  } catch (e) {
-    const publicPath = path.join(process.cwd(), "public", "supported_devices.csv")
-    const buf = await readFile(publicPath)
-    csvText = decodeCsvBuffer(buf)
-  }
+  const origin = new URL(req.url).origin          // e.g. http://localhost:3000 or https://gamenative.app
+  const csvUrl = `${origin}/supported_devices.csv`
+
+  const buf = await fetch(csvUrl)
+  .then(r => r.arrayBuffer())
+  .then(ab => Buffer.from(ab));
+
+  const csvText = decodeCsvBuffer(buf);
+
   const lines = csvText.split(/\r?\n/)
 
   // Header: Retail Branding,Marketing Name,Device,Model
@@ -140,7 +139,7 @@ export async function POST(req: Request) {
     if (!requestedModels.length) {
       return NextResponse.json({ mapping: {}, displays: {} }, { status: 200 })
     }
-    const result = await buildMapping(requestedModels)
+    const result = await buildMapping(requestedModels, req)
     return NextResponse.json(result)
   } catch (err: any) {
     return NextResponse.json({ mapping: {}, displays: {}, error: err?.message ?? "Unknown error" }, { status: 500 })
@@ -168,7 +167,7 @@ export async function GET(req: Request) {
     if (!requestedModels.length) {
       return NextResponse.json({ mapping: {}, displays: {} }, { status: 200 })
     }
-    const result = await buildMapping(requestedModels)
+    const result = await buildMapping(requestedModels, req)
     return NextResponse.json(result)
   } catch (err: any) {
     return NextResponse.json({ mapping: {}, displays: {}, error: err?.message ?? "Unknown error" }, { status: 500 })
