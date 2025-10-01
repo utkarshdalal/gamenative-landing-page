@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
+import { Combobox } from "@/components/ui/combobox"
 
 type Device = { id: number; model: string; gpu: string | null; android_ver: string | null }
 type RunRow = {
@@ -44,25 +45,9 @@ export default function CompatibilityPage() {
   const [deviceInput, setDeviceInput] = useState("")
   const [gpu, setGpu] = useState("")
   const [ratingMin, setRatingMin] = useState<number | null>(null)
-  const [ratingDropdownOpen, setRatingDropdownOpen] = useState(false)
   const [sortField, setSortField] = useState<"rating" | "created_at">("rating")
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc")
-  
-  // Handle click outside to close rating dropdown
-  const ratingDropdownRef = React.useRef<HTMLDivElement>(null)
-  
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (ratingDropdownRef.current && !ratingDropdownRef.current.contains(event.target as Node)) {
-        setRatingDropdownOpen(false)
-      }
-    }
-    
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
+
 
   const [devices, setDevices] = useState<Device[]>([])
   const [rows, setRows] = useState<RunRow[]>([])
@@ -77,6 +62,7 @@ export default function CompatibilityPage() {
 
   // Typeahead game suggestions
   const [gameSuggestions, setGameSuggestions] = useState<{ id: number; name: string }[]>([])
+  const [gameSuggestionsLoading, setGameSuggestionsLoading] = useState(false)
 
   // Distinct GPU list derived from devices
   const gpus = useMemo(
@@ -314,8 +300,10 @@ export default function CompatibilityPage() {
     const fetchSuggestions = async () => {
       if (!dQuery) {
         setGameSuggestions([])
+        setGameSuggestionsLoading(false)
         return
       }
+      setGameSuggestionsLoading(true)
       const { data, error } = await supabase
         .from("games")
         .select("id,name")
@@ -323,6 +311,7 @@ export default function CompatibilityPage() {
         .order("name")
         .limit(10)
       if (!error) setGameSuggestions(data ?? [])
+      setGameSuggestionsLoading(false)
     }
     fetchSuggestions()
   }, [dQuery])
@@ -429,150 +418,78 @@ export default function CompatibilityPage() {
           <CardContent className="p-6">
             <div className="grid gap-4 md:grid-cols-4">
               {/* Search by game */}
-              <div className="flex flex-col">
-                <label className="text-sm text-gray-300 mb-2">Search by Game</label>
-                <input
-                  type="text"
-                  value={query}
-                  onChange={(e) => {
-                    const val = e.target.value
-                    setQuery(val)
-                    // Reset selection unless the typed value exactly matches a suggestion
-                    const match = gameSuggestions.find((g) => g.name === val)
-                    setSelectedGameId(match ? match.id : null)
-                  }}
-                  list="game-list"
-                  placeholder="Elden Ring"
-                  className="rounded-md bg-black/40 border border-gray-700 px-3 py-2 text-gray-100 placeholder-gray-400 outline-none focus:border-cyan-500"
-                />
-                <datalist id="game-list">
-                  {gameSuggestions.map((g) => (
-                    <option key={g.id} value={g.name} />
-                  ))}
-                </datalist>
-              </div>
+              <Combobox
+                label="Search by Game"
+                placeholder="Elden Ring"
+                inputValue={query}
+                onInputChange={(val) => {
+                  setQuery(val)
+                  const match = gameSuggestions.find((g) => g.name === val)
+                  setSelectedGameId(match ? match.id : null)
+                }}
+                items={gameSuggestions.map((g) => ({ value: String(g.id), label: g.name }))}
+                emptyText={gameSuggestionsLoading ? "Loading..." : "No results"}
+                onSelect={(item) => {
+                  setQuery(item.label)
+                  setSelectedGameId(Number(item.value))
+                }}
+              />
 
               {/* Device typeable dropdown */}
-              <div className="flex flex-col">
-                <label className="text-sm text-gray-300 mb-2">Device</label>
-                <input
-                  list="device-list"
-                  value={deviceInput}
-                  onChange={(e) => {
-                    const val = e.target.value
-                    setDeviceInput(val)
-                    setDeviceId(resolveDeviceId(val))
-                  }}
-                  placeholder="Google Pixel 7"
-                  className="rounded-md bg-black/40 border border-gray-700 px-3 py-2 text-gray-100 placeholder-gray-400 outline-none focus:border-cyan-500"
-                />
-                <datalist id="device-list">
-                  {/* Marketing names first */}
-                  {Object.entries(marketingDisplays).map(([marketing, model]) => (
-                    <option key={`m|${marketing}`} value={marketing} />
-                  ))}
-                  {/* Fallback to raw model labels ONLY if no marketing mapping exists for that model */}
-                  {devices
+              <Combobox
+                label="Device"
+                placeholder="Google Pixel 7"
+                inputValue={deviceInput}
+                onInputChange={(val) => {
+                  setDeviceInput(val)
+                  setDeviceId(resolveDeviceId(val))
+                }}
+                items={[
+                  // Marketing names first
+                  ...Object.entries(marketingDisplays).map(([marketing, brandModel]) => ({
+                    value: marketing,
+                    label: marketing,
+                    meta: brandModel,
+                  })),
+                  // Fallback to raw model labels ONLY if not covered
+                  ...devices
                     .filter((d) => !coveredModelSet.has(normalize(d.model)))
-                    .map((d) => (
-                      <option key={`model|${d.id}`} value={deviceLabel(d)} />
-                    ))}
-                </datalist>
-              </div>
+                    .map((d) => ({ value: String(d.id), label: deviceLabel(d) })),
+                ]}
+                onSelect={(item) => {
+                  setDeviceInput(item.label)
+                  setDeviceId(resolveDeviceId(item.label))
+                }}
+              />
 
               {/* GPU dropdown */}
-              <div className="flex flex-col">
-                <label className="text-sm text-gray-300 mb-2">GPU</label>
-                <input
-                  list="gpu-list"
-                  value={gpu}
-                  onChange={(e) => setGpu(e.target.value)}
-                  placeholder="Adreno 730"
-                  className="rounded-md bg-black/40 border border-gray-700 px-3 py-2 text-gray-100 placeholder-gray-400 outline-none focus:border-cyan-500"
-                />
-                <datalist id="gpu-list">
-                  {gpus.map((g) => (
-                    <option key={g} value={g} />
-                  ))}
-                </datalist>
-              </div>
+              <Combobox
+                label="GPU"
+                placeholder="Adreno 730"
+                inputValue={gpu}
+                onInputChange={(val) => setGpu(val)}
+                items={gpus.map((g) => ({ value: g, label: g }))}
+                onSelect={(item) => setGpu(item.label)}
+              />
 
-              {/* Rating filter - Custom dropdown */}
-              <div className="flex flex-col relative z-40" ref={ratingDropdownRef}>
-                <label className="text-sm text-gray-300 mb-2">Rating</label>
-                <div 
-                  onClick={() => setRatingDropdownOpen(prev => !prev)} 
-                  className="rounded-md bg-black/40 border border-gray-700 px-3 py-2 text-gray-100 placeholder-gray-400 outline-none focus:border-cyan-500 cursor-pointer flex justify-between items-center"
-                >
-                  <span className={ratingMin === null ? "text-gray-400" : ""}>
-                    {ratingMin !== null 
-                      ? (ratingMin === 5 ? "5" : `${ratingMin} & above`) 
-                      : "Any"}
-                  </span>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
-                    <path d="m6 9 6 6 6-6"/>
-                  </svg>
-                </div>
-                
-                {ratingDropdownOpen && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-gray-900 border border-gray-700 rounded-md shadow-lg z-50">
-                    <div 
-                      className="px-3 py-2 hover:bg-gray-800 cursor-pointer" 
-                      onClick={() => {
-                        setRatingMin(null);
-                        setRatingDropdownOpen(false);
-                      }}
-                    >
-                      Any
-                    </div>
-                    <div 
-                      className="px-3 py-2 hover:bg-gray-800 cursor-pointer" 
-                      onClick={() => {
-                        setRatingMin(5);
-                        setRatingDropdownOpen(false);
-                      }}
-                    >
-                      5
-                    </div>
-                    <div 
-                      className="px-3 py-2 hover:bg-gray-800 cursor-pointer" 
-                      onClick={() => {
-                        setRatingMin(4);
-                        setRatingDropdownOpen(false);
-                      }}
-                    >
-                      4 & above
-                    </div>
-                    <div 
-                      className="px-3 py-2 hover:bg-gray-800 cursor-pointer" 
-                      onClick={() => {
-                        setRatingMin(3);
-                        setRatingDropdownOpen(false);
-                      }}
-                    >
-                      3 & above
-                    </div>
-                    <div 
-                      className="px-3 py-2 hover:bg-gray-800 cursor-pointer" 
-                      onClick={() => {
-                        setRatingMin(2);
-                        setRatingDropdownOpen(false);
-                      }}
-                    >
-                      2 & above
-                    </div>
-                    <div 
-                      className="px-3 py-2 hover:bg-gray-800 cursor-pointer" 
-                      onClick={() => {
-                        setRatingMin(1);
-                        setRatingDropdownOpen(false);
-                      }}
-                    >
-                      1 & above
-                    </div>
-                  </div>
-                )}
-              </div>
+              {/* Rating filter - Combobox */}
+              <Combobox
+                label="Rating"
+                placeholder={ratingMin !== null ? (ratingMin === 5 ? "5" : `${ratingMin} & above`) : "Any"}
+                inputValue=""
+                onInputChange={() => {}}
+                items={[
+                  { value: "", label: "Any" },
+                  { value: "5", label: "5" },
+                  { value: "4", label: "4 & above" },
+                  { value: "3", label: "3 & above" },
+                  { value: "2", label: "2 & above" },
+                  { value: "1", label: "1 & above" },
+                ]}
+                onSelect={(item) => {
+                  setRatingMin(item.value ? Number(item.value) : null)
+                }}
+              />
             </div>
           </CardContent>
         </Card>
