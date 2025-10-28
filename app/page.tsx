@@ -16,7 +16,7 @@ export default function GameNativePage() {
       <div className="container max-w-3xl mx-auto px-4 relative z-10">
         {/* Hero Section */}
         <section className="min-h-screen flex flex-col justify-center items-center text-center">
-          <img className="w-20 h-20 bg-gradient-to-br from-purple-500 to-cyan-500 rounded-2xl mb-8 shadow-2xl shadow-purple-500/40" src="/apple-touch-icon.png" alt="GameNative Logo"/>
+          <img className="w-20 h-20 bg-gradient-to-br from-purple-500 to-cyan-500 rounded-2xl mb-8 shadow-2xl shadow-purple-500/40" src="/ic_launcher-playstore.png" alt="GameNative Logo"/>
 
           <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
             GameNative
