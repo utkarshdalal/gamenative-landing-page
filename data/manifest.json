@@ -1,4 +1,5 @@
 {
+  "qcom-849.0": "qcom-849.zip",
   "8eGen5-842.8": "8eGen5-842.8.zip",
   "8eGen5-842.6": "8Elite2-842.6.zip",
   "8Elite-800.51": "8Elite-800.51.zip",
@@ -16,6 +17,8 @@
   "Adreno_814": "Adreno_814.zip",
   "Adreno_805.0": "8E-805.0.zip",
   "Adreno_762.10": "adreno_762.10.zip",
+  "turnip_v26.0.0_R2_mem": "turnip_v26.0.0_R2_mem.zip",
+  "turnip_v26.0.0_R2": "turnip_v26.0.0_R2.zip",
   "turnip_v26.0.0_R1_mem": "turnip_v26.0.0_R1_mem.zip",
   "turnip_v26.0.0_R1": "turnip_v26.0.0_R1.zip",
   "turnip_v25.3.0_R11": "turnip_v25.3.0_R11.zip",
