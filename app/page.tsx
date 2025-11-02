@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Download, MessageCircle, Coffee, ChevronDown, Wrench, Car } from "lucide-react"
+import { Download, MessageCircle, Coffee, ChevronDown, Wrench, Car, Github } from "lucide-react"
 import Link from "next/link"
 
 export default function GameNativePage() {
@@ -23,11 +23,11 @@ export default function GameNativePage() {
           </h1>
 
           <h2 className="text-2xl md:text-3xl font-semibold text-white mb-4">
-            Your Steam Library, on Android.
+            Free, open-source PC gaming via Steam, on Android.
           </h2>
 
           <p className="text-xl text-gray-300 mb-12 max-w-2xl leading-relaxed">
-            Play your favorite PC games directly on your Android device. Just log in to Steam, install your game, and start playing.
+            Play your favorite PC games directly on your Android device. Just log in to Steam, install your game, and start playing, with full cloud save support.
           </p>
 
           <div className="flex flex-col gap-4 w-full max-w-sm">
@@ -36,7 +36,7 @@ export default function GameNativePage() {
               size="lg"
               className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold py-4 text-lg shadow-lg shadow-purple-500/40"
             >
-              <a href="https://downloads.gamenative.app/releases/0.5.0/gamenative-v0.5.0.apk">
+              <a href="https://downloads.gamenative.app/releases/0.5.0/gamenative-v0.5.0-hotfix3.apk">
                 <Download className="w-5 h-5 mr-2" />
                 Download Now
               </a>
@@ -75,6 +75,18 @@ export default function GameNativePage() {
               <a href="https://discord.gg/2hKv4VfZfE" target="_blank" rel="noopener noreferrer">
                 <MessageCircle className="w-5 h-5 mr-2" />
                 Join the Discord
+              </a>
+            </Button>
+
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="border-cyan-500 text-cyan-400 hover:bg-cyan-500/10 font-semibold py-4 text-lg bg-transparent"
+            >
+              <a href="https://github.com/utkarshdalal/GameNative" target="_blank" rel="noopener noreferrer">
+                <Github className="w-5 h-5 mr-2" />
+                View on GitHub
               </a>
             </Button>
 
