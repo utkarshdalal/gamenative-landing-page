@@ -36,7 +36,7 @@ export default function GameNativePage() {
               size="lg"
               className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold py-4 text-lg shadow-lg shadow-purple-500/40"
             >
-              <a href="https://downloads.gamenative.app/releases/0.5.0/gamenative-v0.5.0-hotfix3.apk">
+              <a href="https://downloads.gamenative.app/releases/0.5.1/gamenative-v0.5.1.apk">
                 <Download className="w-5 h-5 mr-2" />
                 Download Now
               </a>
