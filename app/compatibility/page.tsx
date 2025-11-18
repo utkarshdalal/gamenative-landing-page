@@ -21,6 +21,7 @@ type RunRow = {
   app_version?: { semver: string } | null
   configs: any
   rating: number
+  avg_fps: number | null
   tags: string[] | null
   notes: string | null
   created_at: string | null
@@ -257,6 +258,7 @@ export default function CompatibilityPage() {
             `id,
              device_id,
              rating,
+             avg_fps,
              tags,
              notes,
              configs,
@@ -631,6 +633,7 @@ function CompatibilityTable({
               ) : null}
             </button>
           </Th>
+          <Th>Avg FPS</Th>
           <Th>Tags</Th>
           <Th>Notes</Th>
           <Th>Configs</Th>
@@ -663,6 +666,7 @@ function CompatibilityTable({
             <Td>
               <span className="font-semibold text-cyan-300">{r.rating}</span>
             </Td>
+            <Td>{typeof r.avg_fps === "number" ? r.avg_fps.toFixed(0) : "-"}</Td>
             <Td>
               <div className="flex flex-wrap gap-1">
                 {Array.isArray(r.tags)
