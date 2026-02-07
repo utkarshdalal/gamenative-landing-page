@@ -200,15 +200,16 @@ export default function CompatibilityPage() {
 
   /** Fetch devices once on mount */
   useEffect(() => {
-    const loadDevices = async () => {
-      const { data, error } = await supabase.from("devices").select("*").order("model")
-      if (error) {
-        setErrorMsg(error.message)
-        return
-      }
-      setDevices(data ?? [])
-    }
-    loadDevices()
+    (async () => {
+      let all: Device[] = [], from = 0, batch
+      do {
+        const { data } = await supabase.from("devices").select("*").range(from, from + 999)
+        batch = data || []
+        all.push(...batch)
+        from += 1000
+      } while (batch.length === 1000)
+      setDevices(all.sort((a, b) => a.model.localeCompare(b.model)))
+    })()
   }, [])
 
   /** After devices load, fetch marketing name mapping for those models */
@@ -457,7 +458,10 @@ export default function CompatibilityPage() {
                   ...devices
                     .filter((d) => !coveredModelSet.has(normalize(d.model)))
                     .map((d) => ({ value: String(d.id), label: deviceLabel(d) })),
-                ]}
+                ]
+                .filter(i => i.label.toLowerCase().includes(deviceInput.toLowerCase()))
+                .slice(0, 50)
+                }
                 onSelect={(item) => {
                   setDeviceInput(item.label)
                   setDeviceId(resolveDeviceId(item.label))
