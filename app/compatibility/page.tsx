@@ -8,7 +8,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from 
 import { Card, CardContent } from "@/components/ui/card"
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
 import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Download } from "lucide-react"
 import { Combobox } from "@/components/ui/combobox"
 
 type Device = { id: number; model: string; gpu: string | null; android_ver: string | null }
@@ -577,6 +577,30 @@ export default function CompatibilityPage() {
   )
 }
 
+/** Export configs as a JSON file; filename from game name or fallback to config-{runId}.json */
+function exportConfigAsJson(
+  configs: any,
+  gameName: string | null | undefined,
+  runId: number,
+) {
+  const json = JSON.stringify(configs, null, 2)
+  const sanitized =
+    gameName && gameName.trim()
+      ? gameName
+          .trim()
+          .replace(/[^a-zA-Z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+      : ""
+  const filename = sanitized ? `${sanitized}-config.json` : `config-${runId}.json`
+  const blob = new Blob([json], { type: "application/json" })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a")
+  a.href = url
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
 /* ---------- presentation helpers ---------- */
 
 function CompatibilityTable({
@@ -685,21 +709,32 @@ function CompatibilityTable({
             </Td>
             <Td>
               {r.configs ? (
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-7 px-2">
-                      View
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-2xl">
-                    <DialogHeader>
-                      <DialogTitle>Configs</DialogTitle>
-                    </DialogHeader>
-                    <div className="mt-2 max-h-[70vh] overflow-auto">
-                      <ConfigsList data={r.configs} />
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                <div className="flex items-center gap-1">
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm" className="h-7 px-2">
+                        View
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-2xl">
+                      <DialogHeader>
+                        <DialogTitle>Configs</DialogTitle>
+                      </DialogHeader>
+                      <div className="mt-2 max-h-[70vh] overflow-auto">
+                        <ConfigsList data={r.configs} />
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-7 px-2"
+                    aria-label="Export config as JSON"
+                    onClick={() => exportConfigAsJson(r.configs, r.game?.name ?? null, r.id)}
+                  >
+                    <Download className="h-4 w-4" />
+                  </Button>
+                </div>
               ) : (
                 <span>-</span>
               )}
