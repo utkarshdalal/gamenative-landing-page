@@ -4,7 +4,7 @@ const nextConfig = {
   output: 'export',
   trailingSlash: true,
   images: {
-    unoptimized: true
+    unoptimized: true,
   },
   basePath: isGhPages ? '/gamenative-landing-page' : '',
   assetPrefix: isGhPages ? '/gamenative-landing-page/' : '',

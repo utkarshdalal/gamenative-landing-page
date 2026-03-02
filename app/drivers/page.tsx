@@ -1,14 +1,16 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Download, MessageCircle, ArrowLeft } from "lucide-react"
-import Link from "next/link"
-import manifest from "@/data/manifest.json"
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Download, MessageCircle, ArrowLeft } from 'lucide-react'
+import Link from 'next/link'
+import manifest from '@/data/manifest.json'
+
+const BASE = process.env.NEXT_PUBLIC_DOWNLOAD_URL ?? 'https://downloads.gamenative.app'
 
 export default function DriversPage() {
   const drivers = Object.entries(manifest).map(([name, filename]) => ({
     name,
     filename,
-    downloadUrl: `https://downloads.gamenative.app/drivers/${filename}`,
+    downloadUrl: `${BASE}/drivers/${filename}`,
   }))
 
   return (
@@ -25,7 +27,8 @@ export default function DriversPage() {
             Driver Downloads
           </h1>
           <p className="text-gray-300 text-lg">
-            Download the latest ARM64 graphics drivers for Winlator Bionic or other ARM64-based emulators.
+            Download the latest ARM64 graphics drivers for Winlator Bionic or other ARM64-based
+            emulators.
           </p>
         </div>
 
@@ -56,7 +59,9 @@ export default function DriversPage() {
           <Card className="bg-gray-900/30 border-gray-700 backdrop-blur-sm">
             <CardContent className="p-6">
               <h3 className="text-lg font-semibold text-white mb-2">Need Help?</h3>
-              <p className="text-gray-300 mb-4">Join our Discord community for support and installation guides.</p>
+              <p className="text-gray-300 mb-4">
+                Join our Discord community for support and installation guides.
+              </p>
               <Button
                 asChild
                 variant="outline"
