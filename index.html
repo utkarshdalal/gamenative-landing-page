@@ -1,418 +1,462 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GameNative - Play Steam Games on Android</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200;12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200;12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --background: #09090B;
-            --foreground: #FAFAFA;
-            --primary: #a21caf;
-            --primary-foreground: #fafafa;
-            --secondary: #27272A;
-            --secondary-foreground: #fafafa;
-            --muted-foreground: #94969c;
-            --accent: #06B6D4;
-            --accent-foreground: #FAFAFA;
-        }
+      :root {
+        --background: #09090b;
+        --foreground: #fafafa;
+        --primary: #a21caf;
+        --primary-foreground: #fafafa;
+        --secondary: #27272a;
+        --secondary-foreground: #fafafa;
+        --muted-foreground: #94969c;
+        --accent: #06b6d4;
+        --accent-foreground: #fafafa;
+      }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--background);
-            color: var(--foreground);
-            line-height: 1.6;
-            overflow-x: hidden;
-            position: relative;
-            min-height: 100vh;
-        }
+      body {
+        font-family:
+          'Bricolage Grotesque',
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        background: var(--background);
+        color: var(--foreground);
+        line-height: 1.6;
+        overflow-x: hidden;
+        position: relative;
+        min-height: 100vh;
+      }
 
-        /* Shader Canvas Background */
-        #shaderCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            opacity: 0.3;
-        }
+      /* Shader Canvas Background */
+      #shaderCanvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        opacity: 0.3;
+      }
 
+      .container {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 2rem;
+        position: relative;
+        z-index: 2;
+      }
+
+      /* Hero Section */
+      .hero {
+        text-align: center;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+      }
+
+      .logo {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 2rem;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(162, 28, 175, 0.4);
+        backdrop-filter: blur(10px);
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1.2;
+      }
+
+      .subhead {
+        font-size: 1.2rem;
+        color: var(--muted-foreground);
+        margin-bottom: 2rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+        margin-bottom: 3rem;
+      }
+
+      .btn {
+        text-decoration: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        border: 1px solid transparent;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary), #8b1a9c);
+        color: var(--primary-foreground);
+        box-shadow: 0 4px 15px rgba(162, 28, 175, 0.4);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(162, 28, 175, 0.6);
+      }
+
+      .btn-secondary {
+        background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(6, 182, 212, 0.2));
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        box-shadow: 0 4px 15px rgba(6, 182, 212, 0.2);
+      }
+
+      .btn-secondary:hover {
+        background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(6, 182, 212, 0.3));
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(6, 182, 212, 0.4);
+      }
+
+      .btn-kofi {
+        background: linear-gradient(135deg, #ff5f5f, #ff8a3d);
+        color: white;
+        box-shadow: 0 4px 15px rgba(255, 95, 95, 0.4);
+      }
+
+      .btn-kofi:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 95, 95, 0.6);
+      }
+
+      /* Animated Arrow */
+      .scroll-arrow {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        cursor: pointer;
+        animation: bounce 2s infinite;
+        transition: all 0.3s ease;
+      }
+
+      .scroll-arrow:hover {
+        transform: translateX(-50%) scale(1.1);
+      }
+
+      .arrow-icon {
+        width: 24px;
+        height: 24px;
+        stroke: var(--accent);
+        stroke-width: 2;
+        fill: none;
+      }
+
+      @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateX(-50%) translateY(0);
+        }
+        40% {
+          transform: translateX(-50%) translateY(-10px);
+        }
+        60% {
+          transform: translateX(-50%) translateY(-5px);
+        }
+      }
+
+      /* Features Section */
+      .features-section {
+        padding: 4rem 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .features-title {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 3rem;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .features {
+        font-size: 1rem;
+        line-height: 1.6;
+      }
+
+      .features-card {
+        padding: 2rem;
+        background: rgba(39, 39, 42, 0.5);
+        border-radius: 16px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .feature-item {
+        margin: 1rem 0;
+        font-size: 1rem;
+        line-height: 1.6;
+      }
+
+      .feature-item:first-child {
+        margin-top: 0;
+      }
+
+      .feature-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .feature-item a {
+        color: var(--accent);
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .feature-item a:hover {
+        color: var(--primary);
+      }
+
+      .feature-item strong {
+        color: var(--accent);
+      }
+
+      .version-info {
+        text-align: center;
+        margin-top: 3rem;
+        padding: 1rem;
+        font-size: 0.9rem;
+        color: var(--muted-foreground);
+        background: rgba(39, 39, 42, 0.3);
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+      }
+
+      .footer {
+        margin-top: 2rem;
+        text-align: center;
+      }
+
+      .footer-content {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 20px;
+        background: rgba(39, 39, 42, 0.8);
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 14px;
+        color: var(--muted-foreground);
+      }
+
+      .gameaway-logo {
+        width: 24px;
+        height: 24px;
+        transition: transform 0.3s ease;
+      }
+
+      .gameaway-link {
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: color 0.3s ease;
+      }
+
+      .gameaway-link:hover {
+        color: var(--primary);
+      }
+
+      .gameaway-link:hover .gameaway-logo {
+        transform: scale(1.1);
+      }
+
+      @media (max-width: 768px) {
         .container {
-            max-width: 720px;
-            margin: 0 auto;
-            padding: 2rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        /* Hero Section */
-        .hero {
-            text-align: center;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-
-        .logo {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 2rem;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(162, 28, 175, 0.4);
-            backdrop-filter: blur(10px);
+          padding: 0 1rem;
         }
 
         h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1.2;
+          font-size: 2rem;
         }
 
         .subhead {
-            font-size: 1.2rem;
-            color: var(--muted-foreground);
-            margin-bottom: 2rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            align-items: center;
-            margin-bottom: 3rem;
+          font-size: 1.1rem;
         }
 
         .btn {
-            text-decoration: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 999px;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            border: 1px solid transparent;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), #8b1a9c);
-            color: var(--primary-foreground);
-            box-shadow: 0 4px 15px rgba(162, 28, 175, 0.4);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(162, 28, 175, 0.6);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(6, 182, 212, 0.2));
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.2);
-        }
-
-        .btn-secondary:hover {
-            background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(6, 182, 212, 0.3));
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(6, 182, 212, 0.4);
-        }
-
-        .btn-kofi {
-            background: linear-gradient(135deg, #ff5f5f, #ff8a3d);
-            color: white;
-            box-shadow: 0 4px 15px rgba(255, 95, 95, 0.4);
-        }
-
-        .btn-kofi:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 95, 95, 0.6);
-        }
-
-        /* Animated Arrow */
-        .scroll-arrow {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            cursor: pointer;
-            animation: bounce 2s infinite;
-            transition: all 0.3s ease;
-        }
-
-        .scroll-arrow:hover {
-            transform: translateX(-50%) scale(1.1);
-        }
-
-        .arrow-icon {
-            width: 24px;
-            height: 24px;
-            stroke: var(--accent);
-            stroke-width: 2;
-            fill: none;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateX(-50%) translateY(0);
-            }
-            40% {
-                transform: translateX(-50%) translateY(-10px);
-            }
-            60% {
-                transform: translateX(-50%) translateY(-5px);
-            }
-        }
-
-        /* Features Section */
-        .features-section {
-            padding: 4rem 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+          width: 100%;
+          max-width: 280px;
+          justify-content: center;
         }
 
         .features-title {
-            text-align: center;
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 3rem;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+          font-size: 1.5rem;
         }
-
-        .features {
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        .features-card {
-            padding: 2rem;
-            background: rgba(39, 39, 42, 0.5);
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .feature-item {
-            margin: 1rem 0;
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        .feature-item:first-child {
-            margin-top: 0;
-        }
-
-        .feature-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .feature-item a {
-            color: var(--accent);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .feature-item a:hover {
-            color: var(--primary);
-        }
-
-        .feature-item strong {
-            color: var(--accent);
-        }
-
-        .version-info {
-            text-align: center;
-            margin-top: 3rem;
-            padding: 1rem;
-            font-size: 0.9rem;
-            color: var(--muted-foreground);
-            background: rgba(39, 39, 42, 0.3);
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-        }
-
-        .footer {
-            margin-top: 2rem;
-            text-align: center;
-        }
-
-        .footer-content {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 20px;
-            background: rgba(39, 39, 42, 0.8);
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 14px;
-            color: var(--muted-foreground);
-        }
-
-        .gameaway-logo {
-            width: 24px;
-            height: 24px;
-            transition: transform 0.3s ease;
-        }
-
-        .gameaway-link {
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: color 0.3s ease;
-        }
-
-        .gameaway-link:hover {
-            color: var(--primary);
-        }
-
-        .gameaway-link:hover .gameaway-logo {
-            transform: scale(1.1);
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 1rem;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            .subhead {
-                font-size: 1.1rem;
-            }
-
-            .btn {
-                width: 100%;
-                max-width: 280px;
-                justify-content: center;
-            }
-
-            .features-title {
-                font-size: 1.5rem;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Shader Canvas Background -->
     <canvas id="shaderCanvas"></canvas>
 
     <div class="container">
-        <!-- Hero Section -->
-        <section class="hero">
-            <img src="icon-512.png" alt="GameNative Logo" class="logo">
-            <h1>GameNative</h1>
-            <h3>Your Steam Library. On Android. Natively.</h3>
-            <p class="subhead">Play your favorite PC games directly on your phone—no cloud PCs, no subscriptions, no lag. Just your games, running locally.</p>
-            
-            <div class="buttons">
-                <a href="https://downloads.gamenative.app/releases/0.3.4/gamenative-v0.3.4.apk" class="btn btn-primary">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                        <polyline points="7,10 12,15 17,10"/>
-                        <line x1="12" y1="15" x2="12" y2="3"/>
-                    </svg>
-                    Download Now
-                </a>
-                <a href="https://discord.gg/2hKv4VfZfE" class="btn btn-secondary">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-                    </svg>
-                    Join the Discord
-                </a>
-                <a href="https://ko-fi.com/gamenative" class="btn btn-kofi" target="_blank">
-                    ☕
-                    Support on Ko-fi
-                </a>
+      <!-- Hero Section -->
+      <section class="hero">
+        <img src="icon-512.png" alt="GameNative Logo" class="logo" />
+        <h1>GameNative</h1>
+        <h3>Your Steam Library. On Android. Natively.</h3>
+        <p class="subhead">
+          Play your favorite PC games directly on your phone—no cloud PCs, no subscriptions, no lag.
+          Just your games, running locally.
+        </p>
+
+        <div class="buttons">
+          <a
+            href="https://downloads.gamenative.app/releases/0.3.4/gamenative-v0.3.4.apk"
+            class="btn btn-primary"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7,10 12,15 17,10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Download Now
+          </a>
+          <a href="https://discord.gg/2hKv4VfZfE" class="btn btn-secondary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"
+              />
+            </svg>
+            Join the Discord
+          </a>
+          <a href="https://ko-fi.com/gamenative" class="btn btn-kofi" target="_blank">
+            ☕ Support on Ko-fi
+          </a>
+        </div>
+
+        <div
+          class="scroll-arrow"
+          onclick="
+            document.querySelector('.features-section').scrollIntoView({ behavior: 'smooth' })
+          "
+        >
+          <svg class="arrow-icon" viewBox="0 0 24 24">
+            <path d="M7 10l5 5 5-5" />
+          </svg>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section class="features-section">
+        <h2 class="features-title">Why GameNative?</h2>
+
+        <div class="features">
+          <div class="features-card">
+            <div class="feature-item">
+              <strong>Safe Steam Login</strong> — Your credentials never leave your device. We don't
+              store or transmit them.
             </div>
 
-            <div class="scroll-arrow" onclick="document.querySelector('.features-section').scrollIntoView({behavior: 'smooth'})">
-                <svg class="arrow-icon" viewBox="0 0 24 24">
-                    <path d="M7 10l5 5 5-5"/>
-                </svg>
-            </div>
-        </section>
-
-        <!-- Features Section -->
-        <section class="features-section">
-            <h2 class="features-title">Why GameNative?</h2>
-            
-            <div class="features">
-                <div class="features-card">
-                    <div class="feature-item">
-                        <strong>Safe Steam Login</strong> — Your credentials never leave your device. We don't store or transmit them.
-                    </div>
-                    
-                    <div class="feature-item">
-                        <strong>No Cloud Required</strong> — GameNative runs games using your Android's own hardware. No external PC or stream server needed.
-                    </div>
-                    
-                    <div class="feature-item">
-                        <strong>Built on <a href="https://github.com/oxters168/Pluvia" target="_blank">Pluvia</a> & <a href="https://github.com/brunodev85/winlator" target="_blank">Winlator</a></strong> — Powered by open-source tech, improved for usability and performance.
-                    </div>
-                    
-                    <div class="feature-item">
-                        <strong>Featured in <a href="https://www.androidauthority.com/gamenative-play-steam-games-android-3568963/" target="_blank">Android Authority</a></strong> - "GameNative is the closest thing to plug-and-play Windows emulation on Android."
-                    </div>
-                </div>
+            <div class="feature-item">
+              <strong>No Cloud Required</strong> — GameNative runs games using your Android's own
+              hardware. No external PC or stream server needed.
             </div>
 
-            <div class="version-info">
-                v0.3.4 • Android 8.0+
+            <div class="feature-item">
+              <strong
+                >Built on <a href="https://github.com/oxters168/Pluvia" target="_blank">Pluvia</a> &
+                <a href="https://github.com/brunodev85/winlator" target="_blank"
+                  >Winlator</a
+                ></strong
+              >
+              — Powered by open-source tech, improved for usability and performance.
             </div>
-        </section>
+
+            <div class="feature-item">
+              <strong
+                >Featured in
+                <a
+                  href="https://www.androidauthority.com/gamenative-play-steam-games-android-3568963/"
+                  target="_blank"
+                  >Android Authority</a
+                ></strong
+              >
+              - "GameNative is the closest thing to plug-and-play Windows emulation on Android."
+            </div>
+          </div>
+        </div>
+
+        <div class="version-info">v0.3.4 • Android 8.0+</div>
+      </section>
     </div>
 
     <script>
-        // WebGL Shader Implementation
-        const canvas = document.getElementById('shaderCanvas');
-        const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+      // WebGL Shader Implementation
+      const canvas = document.getElementById('shaderCanvas')
+      const gl = canvas.getContext('webgl2') || canvas.getContext('webgl')
 
-        if (!gl) {
-            console.error('WebGL not supported');
-        } else {
-            // Vertex shader source
-            const vertexShaderSource = `
+      if (!gl) {
+        console.error('WebGL not supported')
+      } else {
+        // Vertex shader source
+        const vertexShaderSource = `
                 attribute vec4 a_position;
                 void main() {
                     gl_Position = a_position;
                 }
-            `;
+            `
 
-            // Fragment shader source (converted from Three.js version)
-            const fragmentShaderSource = `
+        // Fragment shader source (converted from Three.js version)
+        const fragmentShaderSource = `
                 precision mediump float;
                 uniform vec2 u_resolution;
                 uniform float u_time;
@@ -456,107 +500,100 @@
                     color.b = max(u_background.b, color.b);
                     gl_FragColor = color;
                 }
-            `;
+            `
 
-            function createShader(gl, type, source) {
-                const shader = gl.createShader(type);
-                gl.shaderSource(shader, source);
-                gl.compileShader(shader);
-                if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-                    console.error('Error compiling shader:', gl.getShaderInfoLog(shader));
-                    gl.deleteShader(shader);
-                    return null;
-                }
-                return shader;
-            }
-
-            function createProgram(gl, vertexShader, fragmentShader) {
-                const program = gl.createProgram();
-                gl.attachShader(program, vertexShader);
-                gl.attachShader(program, fragmentShader);
-                gl.linkProgram(program);
-                if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-                    console.error('Error linking program:', gl.getProgramInfoLog(program));
-                    gl.deleteProgram(program);
-                    return null;
-                }
-                return program;
-            }
-
-            const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-            const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
-            
-            if (!vertexShader || !fragmentShader) {
-                console.error('Failed to create shaders');
-            } else {
-                const program = createProgram(gl, vertexShader, fragmentShader);
-
-                if (!program) {
-                    console.error('Failed to create shader program');
-                } else {
-                    // Get attribute and uniform locations
-                    const positionAttributeLocation = gl.getAttribLocation(program, 'a_position');
-                    const resolutionUniformLocation = gl.getUniformLocation(program, 'u_resolution');
-                    const timeUniformLocation = gl.getUniformLocation(program, 'u_time');
-                    const colorUniformLocation = gl.getUniformLocation(program, 'u_color');
-                    const backgroundUniformLocation = gl.getUniformLocation(program, 'u_background');
-                    const speedUniformLocation = gl.getUniformLocation(program, 'u_speed');
-                    const detailUniformLocation = gl.getUniformLocation(program, 'u_detail');
-
-                    // Create buffer for full-screen quad
-                    const positionBuffer = gl.createBuffer();
-                    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-                    const positions = [
-                        -1, -1,
-                         1, -1,
-                        -1,  1,
-                        -1,  1,
-                         1, -1,
-                         1,  1,
-                    ];
-                    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
-
-                    function resizeCanvas() {
-                        canvas.width = window.innerWidth;
-                        canvas.height = window.innerHeight;
-                        gl.viewport(0, 0, canvas.width, canvas.height);
-                    }
-
-                    function render(time) {
-                        resizeCanvas();
-
-                        gl.clearColor(0, 0, 0, 1);
-                        gl.clear(gl.COLOR_BUFFER_BIT);
-
-                        gl.useProgram(program);
-
-                        // Set uniforms
-                        gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height);
-                        gl.uniform1f(timeUniformLocation, time * 0.001);
-                        gl.uniform3f(colorUniformLocation, 0.3137254901960784, 0, 1); // Purple color
-                        gl.uniform4f(backgroundUniformLocation, 0, 0, 0, 1);
-                        gl.uniform1f(speedUniformLocation, 0.1);
-                        gl.uniform1f(detailUniformLocation, 0.044);
-
-                        // Set up position attribute
-                        gl.enableVertexAttribArray(positionAttributeLocation);
-                        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-                        gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
-
-                        // Draw
-                        gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-                        requestAnimationFrame(render);
-                    }
-
-                    // Start the render loop
-                    requestAnimationFrame(render);
-
-                    // Handle window resize
-                    window.addEventListener('resize', resizeCanvas);
-                }
-            }
+        function createShader(gl, type, source) {
+          const shader = gl.createShader(type)
+          gl.shaderSource(shader, source)
+          gl.compileShader(shader)
+          if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+            console.error('Error compiling shader:', gl.getShaderInfoLog(shader))
+            gl.deleteShader(shader)
+            return null
+          }
+          return shader
         }
+
+        function createProgram(gl, vertexShader, fragmentShader) {
+          const program = gl.createProgram()
+          gl.attachShader(program, vertexShader)
+          gl.attachShader(program, fragmentShader)
+          gl.linkProgram(program)
+          if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+            console.error('Error linking program:', gl.getProgramInfoLog(program))
+            gl.deleteProgram(program)
+            return null
+          }
+          return program
+        }
+
+        const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource)
+        const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource)
+
+        if (!vertexShader || !fragmentShader) {
+          console.error('Failed to create shaders')
+        } else {
+          const program = createProgram(gl, vertexShader, fragmentShader)
+
+          if (!program) {
+            console.error('Failed to create shader program')
+          } else {
+            // Get attribute and uniform locations
+            const positionAttributeLocation = gl.getAttribLocation(program, 'a_position')
+            const resolutionUniformLocation = gl.getUniformLocation(program, 'u_resolution')
+            const timeUniformLocation = gl.getUniformLocation(program, 'u_time')
+            const colorUniformLocation = gl.getUniformLocation(program, 'u_color')
+            const backgroundUniformLocation = gl.getUniformLocation(program, 'u_background')
+            const speedUniformLocation = gl.getUniformLocation(program, 'u_speed')
+            const detailUniformLocation = gl.getUniformLocation(program, 'u_detail')
+
+            // Create buffer for full-screen quad
+            const positionBuffer = gl.createBuffer()
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
+            const positions = [-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW)
+
+            function resizeCanvas() {
+              canvas.width = window.innerWidth
+              canvas.height = window.innerHeight
+              gl.viewport(0, 0, canvas.width, canvas.height)
+            }
+
+            function render(time) {
+              resizeCanvas()
+
+              gl.clearColor(0, 0, 0, 1)
+              gl.clear(gl.COLOR_BUFFER_BIT)
+
+              gl.useProgram(program)
+
+              // Set uniforms
+              gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height)
+              gl.uniform1f(timeUniformLocation, time * 0.001)
+              gl.uniform3f(colorUniformLocation, 0.3137254901960784, 0, 1) // Purple color
+              gl.uniform4f(backgroundUniformLocation, 0, 0, 0, 1)
+              gl.uniform1f(speedUniformLocation, 0.1)
+              gl.uniform1f(detailUniformLocation, 0.044)
+
+              // Set up position attribute
+              gl.enableVertexAttribArray(positionAttributeLocation)
+              gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
+              gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0)
+
+              // Draw
+              gl.drawArrays(gl.TRIANGLES, 0, 6)
+
+              requestAnimationFrame(render)
+            }
+
+            // Start the render loop
+            requestAnimationFrame(render)
+
+            // Handle window resize
+            window.addEventListener('resize', resizeCanvas)
+          }
+        }
+      }
     </script>
-</body>
+  </body>
 </html>

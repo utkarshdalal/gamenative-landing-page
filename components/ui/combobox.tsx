@@ -3,7 +3,14 @@
 import * as React from 'react'
 import { ChevronsUpDown, X } from 'lucide-react'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
 import { CommandDialog } from '@/components/ui/command'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { cn } from '@/lib/utils'
@@ -85,17 +92,11 @@ export function Combobox({
 
   return (
     <div className={cn('flex flex-col', className)}>
-      {label ? (
-        <label className="text-sm text-gray-300 mb-2">{label}</label>
-      ) : null}
+      {label ? <label className="text-sm text-gray-300 mb-2">{label}</label> : null}
 
       {isMobile ? (
         <>
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            className={triggerClasses}
-          >
+          <button type="button" onClick={() => setOpen(true)} className={triggerClasses}>
             <span className={cn('truncate', !inputValue ? 'text-gray-400' : undefined)}>
               {inputValue || placeholder}
             </span>
@@ -138,5 +139,3 @@ export function Combobox({
     </div>
   )
 }
-
-
