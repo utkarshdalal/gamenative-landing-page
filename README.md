@@ -15,19 +15,16 @@ A modern Next.js website for GameNative - play your Steam library natively on An
 ### Option 2: Manual Deployment
 
 1. Update `next.config.mjs` and replace `your-repo-name` with your actual repository name
-2. Run the build command:
-   \`\`\`bash
-   npm run build
-   \`\`\`
+2. Run the build command `pnpm run build`
 3. The static files will be generated in the `out` folder
 4. Upload the contents of the `out` folder to your GitHub Pages repository
 
 ### Local Development
 
-\`\`\`bash
-npm install
-npm run dev
-\`\`\`
+```bash
+pnpm install
+pnpm run dev
+```
 
 Open [http://localhost:3000](http://localhost:3000) to view the site locally.
 
