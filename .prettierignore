@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Lock files
+pnpm-lock.yaml
+
+# Build output
+dist/
+out/
+.next/
+
+# Coverage
+coverage/
+
+# IDE / editor
+.idea/
+.vscode/
+.claude/
+.cursor/
+
+# OS
+.DS_Store

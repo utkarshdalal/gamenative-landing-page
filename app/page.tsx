@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Download, MessageCircle, Coffee, ChevronDown, Wrench, Car, Github } from "lucide-react"
-import Link from "next/link"
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Download, MessageCircle, Coffee, ChevronDown, Wrench, Car, Github } from 'lucide-react'
+import Link from 'next/link'
 
 export default function GameNativePage() {
   return (
@@ -16,7 +16,11 @@ export default function GameNativePage() {
       <div className="container max-w-3xl mx-auto px-4 relative z-10">
         {/* Hero Section */}
         <section className="min-h-screen flex flex-col justify-center items-center text-center">
-          <img className="w-20 h-20 bg-gradient-to-br from-purple-500 to-cyan-500 rounded-2xl mb-8 shadow-2xl shadow-purple-500/40" src="/ic_launcher-playstore.png" alt="GameNative Logo"/>
+          <img
+            className="w-20 h-20 bg-gradient-to-br from-purple-500 to-cyan-500 rounded-2xl mb-8 shadow-2xl shadow-purple-500/40"
+            src="/ic_launcher-playstore.png"
+            alt="GameNative Logo"
+          />
 
           <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
             GameNative
@@ -27,7 +31,8 @@ export default function GameNativePage() {
           </h2>
 
           <p className="text-xl text-gray-300 mb-12 max-w-2xl leading-relaxed">
-            Play your favorite PC games directly on your Android device. Just log in to Steam, install your game, and start playing, with full cloud save support.
+            Play your favorite PC games directly on your Android device. Just log in to Steam,
+            install your game, and start playing, with full cloud save support.
           </p>
 
           <div className="flex flex-col gap-4 w-full max-w-sm">
@@ -84,7 +89,11 @@ export default function GameNativePage() {
               size="lg"
               className="border-cyan-500 text-cyan-400 hover:bg-cyan-500/10 font-semibold py-4 text-lg bg-transparent"
             >
-              <a href="https://github.com/utkarshdalal/GameNative" target="_blank" rel="noopener noreferrer">
+              <a
+                href="https://github.com/utkarshdalal/GameNative"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Github className="w-5 h-5 mr-2" />
                 View on GitHub
               </a>
