@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { exportConfigAsJson } from '@/lib/export-config'
+import { normalize } from '@/lib/device-utils'
 import { useDevicesWithMarketing } from '@/hooks/use-devices-with-marketing'
 import { useGameSuggestions } from '@/hooks/use-game-suggestions'
 import { useCompatibilityRuns } from '@/hooks/use-compatibility-runs'
@@ -40,20 +41,24 @@ export default function CompatibilityPage() {
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
 
   // ── Data hooks ────────────────────────────────────────────────────
-  const { gpus, modelToMarketing } = useDevicesWithMarketing()
+  const { devices, gpus, modelToMarketing } = useDevicesWithMarketing()
 
   const { suggestions, loading: suggestionsLoading } = useGameSuggestions(query)
 
-  // Auto-select GPU on Android based on WebGL renderer (only if user hasn't picked one)
+  // Auto-select GPU on Android (only if user hasn't picked one).
+  // Prefer UA Client Hints model lookup; fall back to WebGL renderer string.
   useEffect(() => {
     if (gpu) return
-    if (!gpus.length) return
-    const raw = detectAndroidGpu()
-    if (!raw) return
-    const match = matchGpuOption(raw, gpus)
-    if (match) setGpu(match)
+    if (!gpus.length || !devices.length) return
+    let cancelled = false
+    autoDetectAndroidGpu(devices, gpus).then((match) => {
+      if (!cancelled && match) setGpu(match)
+    })
+    return () => {
+      cancelled = true
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gpus])
+  }, [devices, gpus])
 
   const { runs, totalCount, page, setPage, loading, error, hasFilters } = useCompatibilityRuns({
     gameId: selectedGameId,
@@ -448,9 +453,47 @@ function ConfigsList({ data, level = 0 }: { data: JsonValue; level?: number }) {
   )
 }
 
-function detectAndroidGpu(): string | null {
-  if (typeof navigator === 'undefined' || typeof document === 'undefined') return null
-  if (!/Android/i.test(navigator.userAgent)) return null
+interface UADataLike {
+  platform?: string
+  getHighEntropyValues?: (hints: string[]) => Promise<{ model?: string; platform?: string }>
+}
+
+async function autoDetectAndroidGpu(
+  devices: { model: string; gpu: string | null }[],
+  gpus: string[],
+): Promise<string | null> {
+  if (typeof navigator === 'undefined') return null
+
+  const uaData = (navigator as Navigator & { userAgentData?: UADataLike }).userAgentData
+  const isAndroidUA = /Android/i.test(navigator.userAgent)
+  const isAndroidCH = uaData?.platform === 'Android'
+  if (!isAndroidUA && !isAndroidCH) return null
+
+  // 1) Preferred: UA Client Hints model → device GPU
+  if (uaData?.getHighEntropyValues) {
+    try {
+      const high = await uaData.getHighEntropyValues(['model'])
+      const model = high.model?.trim()
+      if (model) {
+        const target = normalize(model)
+        const gpuFromDevice =
+          devices.find((d) => normalize(d.model) === target)?.gpu ??
+          devices.find((d) => normalize(d.model).endsWith(target))?.gpu ??
+          null
+        if (gpuFromDevice && gpus.includes(gpuFromDevice)) return gpuFromDevice
+      }
+    } catch {
+      // fall through to WebGL
+    }
+  }
+
+  // 2) Fallback: WebGL renderer string (unreliable on modern Chrome — may be bucketed)
+  const raw = readWebGLRenderer()
+  return raw ? matchGpuOption(raw, gpus) : null
+}
+
+function readWebGLRenderer(): string | null {
+  if (typeof document === 'undefined') return null
   try {
     const canvas = document.createElement('canvas')
     const gl = (canvas.getContext('webgl2') ||
