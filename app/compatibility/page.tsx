@@ -1,8 +1,7 @@
 'use client'
 
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { exportConfigAsJson } from '@/lib/export-config'
-import { normalize, deviceLabel, resolveDeviceId } from '@/lib/device-utils'
 import { useDevicesWithMarketing } from '@/hooks/use-devices-with-marketing'
 import { useGameSuggestions } from '@/hooks/use-game-suggestions'
 import { useCompatibilityRuns } from '@/hooks/use-compatibility-runs'
@@ -35,33 +34,30 @@ export default function CompatibilityPage() {
   // ── UI state ──────────────────────────────────────────────────────
   const [query, setQuery] = useState('')
   const [selectedGameId, setSelectedGameId] = useState<number | null>(null)
-  const [deviceInput, setDeviceInput] = useState('')
   const [gpu, setGpu] = useState('')
   const [ratingMin, setRatingMin] = useState<number | null>(null)
   const [sortField, setSortField] = useState<'rating' | 'created_at'>('rating')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
 
   // ── Data hooks ────────────────────────────────────────────────────
-  const {
-    devices,
-    gpus,
-    modelToMarketing,
-    marketingToModelNorm,
-    coveredModelSet,
-    marketingDisplays,
-  } = useDevicesWithMarketing()
+  const { gpus, modelToMarketing } = useDevicesWithMarketing()
 
   const { suggestions, loading: suggestionsLoading } = useGameSuggestions(query)
 
-  // Derive deviceId from user input + loaded device/marketing data
-  const deviceId = useMemo(
-    () => resolveDeviceId(deviceInput, devices, marketingToModelNorm),
-    [deviceInput, devices, marketingToModelNorm],
-  )
+  // Auto-select GPU on Android based on WebGL renderer (only if user hasn't picked one)
+  useEffect(() => {
+    if (gpu) return
+    if (!gpus.length) return
+    const raw = detectAndroidGpu()
+    if (!raw) return
+    const match = matchGpuOption(raw, gpus)
+    if (match) setGpu(match)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gpus])
 
   const { runs, totalCount, page, setPage, loading, error, hasFilters } = useCompatibilityRuns({
     gameId: selectedGameId,
-    deviceId,
+    deviceId: null,
     gpu,
     ratingMin,
     sort: sortField,
@@ -90,7 +86,7 @@ export default function CompatibilityPage() {
         {/* Filters */}
         <Card className="bg-gray-900/50 border-gray-700 backdrop-blur-sm mb-6">
           <CardContent className="p-6">
-            <div className="grid gap-4 md:grid-cols-4">
+            <div className="grid gap-4 md:grid-cols-3">
               <Combobox
                 label="Search by Game"
                 placeholder="Elden Ring"
@@ -106,24 +102,6 @@ export default function CompatibilityPage() {
                   setQuery(item.label)
                   setSelectedGameId(Number(item.value))
                 }}
-              />
-
-              <Combobox
-                label="Device"
-                placeholder="Google Pixel 7"
-                inputValue={deviceInput}
-                onInputChange={setDeviceInput}
-                items={[
-                  ...Object.entries(marketingDisplays).map(([marketing, brandModel]) => ({
-                    value: marketing,
-                    label: marketing,
-                    meta: brandModel,
-                  })),
-                  ...devices
-                    .filter((d) => !coveredModelSet.has(normalize(d.model)))
-                    .map((d) => ({ value: String(d.id), label: deviceLabel(d) })),
-                ]}
-                onSelect={(item) => setDeviceInput(item.label)}
               />
 
               <Combobox
@@ -467,6 +445,44 @@ function ConfigsList({ data, level = 0 }: { data: JsonValue; level?: number }) {
         </div>
       ))}
     </div>
+  )
+}
+
+function detectAndroidGpu(): string | null {
+  if (typeof navigator === 'undefined' || typeof document === 'undefined') return null
+  if (!/Android/i.test(navigator.userAgent)) return null
+  try {
+    const canvas = document.createElement('canvas')
+    const gl = (canvas.getContext('webgl2') ||
+      canvas.getContext('webgl') ||
+      canvas.getContext('experimental-webgl')) as WebGLRenderingContext | null
+    if (!gl) return null
+    const ext = gl.getExtension('WEBGL_debug_renderer_info')
+    const renderer = ext
+      ? (gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) as string)
+      : (gl.getParameter(gl.RENDERER) as string)
+    return renderer || null
+  } catch {
+    return null
+  }
+}
+
+function matchGpuOption(raw: string, options: string[]): string | null {
+  const lower = raw.toLowerCase()
+  const direct = options.find((g) => lower.includes(g.toLowerCase()))
+  if (direct) return direct
+  const m = lower.match(/(adreno[\s(tm)]*\d+|mali-?[a-z]?\d+[a-z0-9-]*|xclipse\s*\d+|powervr[\s\w-]*)/i)
+  if (!m) return null
+  const token = m[0].replace(/\(tm\)/gi, '').replace(/\s+/g, ' ').trim().toLowerCase()
+  const numMatch = token.match(/\d+/)
+  const family = token.match(/adreno|mali|xclipse|powervr/i)?.[0].toLowerCase()
+  return (
+    options.find((g) => {
+      const o = g.toLowerCase()
+      if (!family || !o.includes(family)) return false
+      if (numMatch && !o.includes(numMatch[0])) return false
+      return true
+    }) ?? null
   )
 }
 
