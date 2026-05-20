@@ -1,8 +1,7 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { exportConfigAsJson } from '@/lib/export-config'
-import { normalize } from '@/lib/device-utils'
 import { useDevicesWithMarketing } from '@/hooks/use-devices-with-marketing'
 import { useGameSuggestions } from '@/hooks/use-game-suggestions'
 import { useCompatibilityRuns } from '@/hooks/use-compatibility-runs'
@@ -41,24 +40,9 @@ export default function CompatibilityPage() {
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
 
   // ── Data hooks ────────────────────────────────────────────────────
-  const { devices, gpus, modelToMarketing } = useDevicesWithMarketing()
+  const { gpus, modelToMarketing } = useDevicesWithMarketing()
 
   const { suggestions, loading: suggestionsLoading } = useGameSuggestions(query)
-
-  // Auto-select GPU on Android (only if user hasn't picked one).
-  // Prefer UA Client Hints model lookup; fall back to WebGL renderer string.
-  useEffect(() => {
-    if (gpu) return
-    if (!gpus.length || !devices.length) return
-    let cancelled = false
-    autoDetectAndroidGpu(devices, gpus).then((match) => {
-      if (!cancelled && match) setGpu(match)
-    })
-    return () => {
-      cancelled = true
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [devices, gpus])
 
   const { runs, totalCount, page, setPage, loading, error, hasFilters } = useCompatibilityRuns({
     gameId: selectedGameId,
@@ -450,82 +434,6 @@ function ConfigsList({ data, level = 0 }: { data: JsonValue; level?: number }) {
         </div>
       ))}
     </div>
-  )
-}
-
-interface UADataLike {
-  platform?: string
-  getHighEntropyValues?: (hints: string[]) => Promise<{ model?: string; platform?: string }>
-}
-
-async function autoDetectAndroidGpu(
-  devices: { model: string; gpu: string | null }[],
-  gpus: string[],
-): Promise<string | null> {
-  if (typeof navigator === 'undefined') return null
-
-  const uaData = (navigator as Navigator & { userAgentData?: UADataLike }).userAgentData
-  const isAndroidUA = /Android/i.test(navigator.userAgent)
-  const isAndroidCH = uaData?.platform === 'Android'
-  if (!isAndroidUA && !isAndroidCH) return null
-
-  // 1) Preferred: UA Client Hints model → device GPU
-  if (uaData?.getHighEntropyValues) {
-    try {
-      const high = await uaData.getHighEntropyValues(['model'])
-      const model = high.model?.trim()
-      if (model) {
-        const target = normalize(model)
-        const gpuFromDevice =
-          devices.find((d) => normalize(d.model) === target)?.gpu ??
-          devices.find((d) => normalize(d.model).endsWith(target))?.gpu ??
-          null
-        if (gpuFromDevice && gpus.includes(gpuFromDevice)) return gpuFromDevice
-      }
-    } catch {
-      // fall through to WebGL
-    }
-  }
-
-  // 2) Fallback: WebGL renderer string (unreliable on modern Chrome — may be bucketed)
-  const raw = readWebGLRenderer()
-  return raw ? matchGpuOption(raw, gpus) : null
-}
-
-function readWebGLRenderer(): string | null {
-  if (typeof document === 'undefined') return null
-  try {
-    const canvas = document.createElement('canvas')
-    const gl = (canvas.getContext('webgl2') ||
-      canvas.getContext('webgl') ||
-      canvas.getContext('experimental-webgl')) as WebGLRenderingContext | null
-    if (!gl) return null
-    const ext = gl.getExtension('WEBGL_debug_renderer_info')
-    const renderer = ext
-      ? (gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) as string)
-      : (gl.getParameter(gl.RENDERER) as string)
-    return renderer || null
-  } catch {
-    return null
-  }
-}
-
-function matchGpuOption(raw: string, options: string[]): string | null {
-  const lower = raw.toLowerCase()
-  const direct = options.find((g) => lower.includes(g.toLowerCase()))
-  if (direct) return direct
-  const m = lower.match(/(adreno[\s(tm)]*\d+|mali-?[a-z]?\d+[a-z0-9-]*|xclipse\s*\d+|powervr[\s\w-]*)/i)
-  if (!m) return null
-  const token = m[0].replace(/\(tm\)/gi, '').replace(/\s+/g, ' ').trim().toLowerCase()
-  const numMatch = token.match(/\d+/)
-  const family = token.match(/adreno|mali|xclipse|powervr/i)?.[0].toLowerCase()
-  return (
-    options.find((g) => {
-      const o = g.toLowerCase()
-      if (!family || !o.includes(family)) return false
-      if (numMatch && !o.includes(numMatch[0])) return false
-      return true
-    }) ?? null
   )
 }
 
