@@ -225,7 +225,7 @@ function PhoneMockup({ children }: { children: ReactNode }) {
         <div className="relative overflow-hidden rounded-[1.55rem] bg-black ring-1 ring-black/60 sm:rounded-[2rem]">
           {children}
           {/* Punch-hole camera */}
-          <div className="pointer-events-none absolute left-3 top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-black ring-1 ring-white/25 sm:left-4 sm:h-3 sm:w-3" />
+          <div className="pointer-events-none absolute left-2 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-black ring-1 ring-white/25 sm:left-3 sm:h-2.5 sm:w-2.5 md:left-4 md:h-3 md:w-3" />
         </div>
       </div>
     </div>
@@ -331,19 +331,10 @@ function DenseWall({ images }: { images: string[] }) {
 
   return (
     <section className="relative mx-auto max-w-7xl px-4 pb-24 pt-4">
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-3 px-2">
+      <div className="mb-6 px-2">
         <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-500">
           Loved by players
         </h2>
-        <a
-          href={DISCORD_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 text-sm text-gray-400 transition-colors hover:text-white"
-        >
-          See more in the Discord
-          <ArrowRight className="h-3.5 w-3.5" />
-        </a>
       </div>
 
       <div ref={stageRef} className="relative w-full">
@@ -363,6 +354,18 @@ function DenseWall({ images }: { images: string[] }) {
             />
           </div>
         ))}
+      </div>
+
+      <div className="mt-10 flex justify-center">
+        <a
+          href={DISCORD_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group inline-flex items-center gap-1.5 text-sm text-gray-400 transition-colors hover:text-white"
+        >
+          See more in the Discord
+          <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+        </a>
       </div>
     </section>
   )
@@ -683,21 +686,24 @@ export default function GameNativePage() {
 
       <main className="relative z-10">
         {/* Hero — fills the viewport so the demo below stays hidden until scroll */}
-        <section className="relative mx-auto flex min-h-[calc(100svh-5rem)] max-w-4xl flex-col items-center justify-center px-6 pb-16 pt-8 text-center md:pb-20">
+        <section className="relative mx-auto flex min-h-[calc(100svh-5rem)] max-w-4xl flex-col items-center justify-center px-6 pb-28 pt-8 text-center md:pb-20">
           <h1 className="relative z-10 text-balance text-5xl font-bold tracking-tight md:text-7xl">
             Your PC games.
             <br />
-            <span
-              className="gn-gradient-anim bg-gradient-to-r from-purple-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent"
-              aria-label="Now on Android."
-            >
-              <span aria-hidden="true">{typedTagline}</span>
-              {typedTagline.length > 0 && (
-                <span aria-hidden="true" className="gn-caret h-[0.85em]" />
-              )}
-              {/* Reserve full-width space so layout doesn't shift while typing. */}
-              <span aria-hidden="true" className="invisible">
-                {'Now on Android.'.slice(typedTagline.length)}
+            <span className="relative inline-block align-baseline" aria-label="Now on Android.">
+              {/* Plain reservation: takes layout space, never paints (no gradient, no clip). */}
+              <span aria-hidden="true" style={{ visibility: 'hidden' }}>
+                Now on Android.
+              </span>
+              {/* Visible typed text, overlaid so its width never affects line wrapping. */}
+              <span
+                aria-hidden="true"
+                className="gn-gradient-anim absolute inset-0 whitespace-nowrap text-left bg-gradient-to-r from-purple-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent"
+              >
+                {typedTagline}
+                {typedTagline.length > 0 && (
+                  <span className="gn-caret h-[0.85em]" />
+                )}
               </span>
             </span>
           </h1>
