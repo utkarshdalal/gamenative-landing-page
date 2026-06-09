@@ -158,15 +158,24 @@
   50%, 100% { opacity: 0; }
 }
 .gn-caret {
+  /* Zero-width inline box. The visible bar is painted by ::before via
+     absolute positioning, so the caret never participates in line-break math
+     and never causes the headline to reflow or wrap unexpectedly. */
+  position: relative;
   display: inline-block;
+  width: 0;
+  height: 0.85em;
+  vertical-align: -0.05em;
+}
+.gn-caret::before {
+  content: '';
+  position: absolute;
+  left: 0.05ch;
+  top: 0;
   width: 0.4ch;
-  /* Cancel the caret's layout width so showing/hiding it never reflows the
-     headline (which would re-center the hero and bounce "Your PC games."). */
-  margin-right: -0.4ch;
-  margin-left: 0.05ch;
+  height: 100%;
   background: linear-gradient(180deg, #c4b5fd, #67e8f9);
   animation: gn-caret-blink 1s steps(1, end) infinite;
-  vertical-align: -0.05em;
 }
 
 /* Hero ambient grid "powers on" on first paint, row by row */

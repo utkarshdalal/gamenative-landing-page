@@ -698,12 +698,12 @@ export default function GameNativePage() {
               {/* Visible typed text, overlaid so its width never affects line wrapping. */}
               <span
                 aria-hidden="true"
-                className="gn-gradient-anim absolute inset-0 whitespace-nowrap text-left bg-gradient-to-r from-purple-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent"
+                className={`gn-gradient-anim absolute inset-0 bg-gradient-to-r from-purple-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent ${
+                  typedDone ? 'text-center' : 'text-left'
+                }`}
               >
                 {typedTagline}
-                {typedTagline.length > 0 && (
-                  <span className="gn-caret h-[0.85em]" />
-                )}
+                {typedTagline.length > 0 && <span className="gn-caret" />}
               </span>
             </span>
           </h1>
