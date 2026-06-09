@@ -139,3 +139,97 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent);
 }
+
+/* ---------- "Gaming UI booting up" animations ---------- */
+
+/* Slow RGB-lighting style sweep across the hero gradient text */
+@keyframes gn-gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.gn-gradient-anim {
+  background-size: 200% 200%;
+  animation: gn-gradient-shift 8s ease-in-out infinite;
+}
+
+/* Terminal caret that blinks after the headline finishes typing */
+@keyframes gn-caret-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.gn-caret {
+  display: inline-block;
+  width: 0.4ch;
+  /* Cancel the caret's layout width so showing/hiding it never reflows the
+     headline (which would re-center the hero and bounce "Your PC games."). */
+  margin-right: -0.4ch;
+  margin-left: 0.05ch;
+  background: linear-gradient(180deg, #c4b5fd, #67e8f9);
+  animation: gn-caret-blink 1s steps(1, end) infinite;
+  vertical-align: -0.05em;
+}
+
+/* Hero ambient grid "powers on" on first paint, row by row */
+@keyframes gn-grid-power-on {
+  0% { opacity: 0; transform: translateY(-12px) scaleY(0.94); filter: brightness(0.4); }
+  60% { opacity: 0.28; filter: brightness(1.6); }
+  100% { opacity: 0.18; transform: translateY(0) scaleY(1); filter: brightness(1); }
+}
+.gn-grid-power-on {
+  animation: gn-grid-power-on 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* Hero element assemble: each piece fades+slides into place after the headline */
+@keyframes gn-assemble {
+  0% { opacity: 0; transform: translateY(14px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.gn-assemble {
+  opacity: 0;
+  animation: gn-assemble 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* Color floods into the page after the black-on-load moment */
+@keyframes gn-color-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.gn-color-in {
+  opacity: 0;
+  animation: gn-color-in 1400ms ease-out both;
+}
+
+/* Bobbing scroll cue at the bottom of the hero */
+@keyframes gn-bob {
+  0%, 100% { transform: translateY(0); opacity: 0.55; }
+  50% { transform: translateY(8px); opacity: 1; }
+}
+.gn-bob {
+  animation: gn-bob 1.8s ease-in-out infinite;
+}
+
+/* CRT power-on flash for the demo video */
+@keyframes gn-crt-on {
+  0% { transform: scaleY(0.002); opacity: 0; filter: brightness(2.5); }
+  40% { transform: scaleY(0.02); opacity: 1; filter: brightness(2.5); }
+  60% { transform: scaleY(1); opacity: 1; filter: brightness(1.4); }
+  100% { transform: scaleY(1); opacity: 1; filter: brightness(1); }
+}
+.gn-crt-on {
+  transform-origin: center;
+  animation: gn-crt-on 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gn-gradient-anim,
+  .gn-caret,
+  .gn-grid-power-on,
+  .gn-color-in,
+  .gn-assemble,
+  .gn-bob,
+  .gn-crt-on {
+    animation: none !important;
+  }
+  .gn-assemble,
+  .gn-color-in { opacity: 1 !important; }
+}

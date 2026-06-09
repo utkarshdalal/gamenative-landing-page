@@ -11,10 +11,10 @@ const bricolage = Bricolage_Grotesque({
 })
 
 export const metadata: Metadata = {
-  title: 'GameNative - Play Steam Games on Android',
+  title: 'GameNative - Play Steam, Epic & GOG Games on Android',
   description:
-    'Play your favorite PC games directly on your phone—no cloud PCs, no subscriptions, no lag. Just your games, running locally.',
-  keywords: 'GameNative, Steam, Android, gaming, mobile gaming, PC games',
+    'Play your favorite PC games from Steam, Epic and GOG directly on your phone or handheld—no cloud PCs, no subscriptions, no lag. Just your games, running locally.',
+  keywords: 'GameNative, Steam, Epic, GOG, Android, gaming, mobile gaming, PC games, handheld',
   authors: [{ name: 'GameNative' }],
   icons: {
     icon: '/favicon.ico',
