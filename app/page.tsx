@@ -1004,7 +1004,12 @@ export default function GameNativePage() {
           </div>
 
           <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-sm text-gray-500 md:flex-row">
-            <span>© {new Date().getFullYear()} GameNative</span>
+            <div className="flex items-center gap-4">
+              <span>© {new Date().getFullYear()} GameNative</span>
+              <Link href="/privacy" className="transition-colors hover:text-gray-300">
+                Privacy
+              </Link>
+            </div>
             <a
               href={GITHUB_URL}
               target="_blank"
