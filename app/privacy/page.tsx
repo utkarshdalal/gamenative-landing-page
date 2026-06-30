@@ -35,23 +35,26 @@ export default function PrivacyPolicyPage() {
           <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent mb-2">
             Privacy Policy
           </h1>
-          <p className="text-gray-400 text-sm">Last updated: June 26, 2026</p>
+          <p className="text-gray-400 text-sm">Last updated: June 30, 2026</p>
         </div>
 
         <Card className="bg-gray-900/50 border-gray-700 backdrop-blur-sm">
           <CardContent className="p-6 md:p-8">
             <p className="text-gray-300 leading-relaxed mb-8">
               GameNative is an application that lets you access and play your owned PC games on
-              supported devices. This policy explains what data we access, how we use it, and how
-              you can request its deletion.
+              supported devices. This policy explains what data we collect and process, how we use
+              it, and how you can request its deletion. Some data is collected only on the version
+              of GameNative distributed through the Meta Horizon Store (Quest); where that is the
+              case, it is described in the <span className="text-white">Meta Horizon (Quest)
+              subscriptions</span> section below.
             </p>
 
             <Section title="Data we store locally">
               <p>
                 Sensitive data — including your login credentials and session information for the
                 game stores you sign into (such as Steam, Epic Games, GOG, and Amazon) — is stored
-                locally on your device. We do not collect, transmit, or store this personal
-                information on our own servers.
+                locally on your device. We do not transmit or retain this credential information on
+                our own servers.
               </p>
             </Section>
 
@@ -79,7 +82,7 @@ export default function PrivacyPolicyPage() {
               <p>This data does not include your name, email, Steam credentials, IP address, or any
                 direct identifiers, cannot be used to identify you personally, and is used only to
                 improve compatibility, recommend working settings, and prioritize fixes. We do not
-                build user profiles, track browsing activity, or sell data to third parties.
+                use it to build advertising profiles or sell data to third parties.
               </p>
             </Section>
 
@@ -90,17 +93,29 @@ export default function PrivacyPolicyPage() {
                 The free, open-source build distributed via GitHub does not include a subscription
                 and does not access any of the data described in this section.
               </p>
-              <p>To verify an active subscription on the Meta Horizon Store version, we access:</p>
+              <p>
+                To verify an active subscription on the Meta Horizon Store version, we collect and
+                process the following <span className="text-white">User Data</span>:
+              </p>
               <ul className="list-disc pl-6 space-y-1">
-                <li>your <span className="text-white">Meta account ID</span>, and</li>
+                <li>your <span className="text-white">Meta account ID (User ID)</span>, and</li>
                 <li>your <span className="text-white">subscription / entitlement status</span> for this app.</li>
               </ul>
               <p>
-                This information is used <span className="text-white">solely</span> to confirm you
-                have an active subscription and unlock the app. We do not store it on our own
-                servers, and we do not share or sell it. It is processed on your device and through
-                Meta&apos;s In-App Purchases platform; Meta&apos;s handling of this data is governed
-                by Meta&apos;s privacy policy.
+                <span className="text-white">How and why we process it:</span> this data is collected
+                at the time you launch the app and is processed <span className="text-white">solely</span>{' '}
+                to confirm you have an active subscription and unlock the app. Processing happens on
+                your device and through Meta&apos;s In-App Purchases platform. We do not retain it on
+                our own servers, and we do not share, sell, or use it for advertising or profiling.
+                Meta&apos;s own handling of this data is governed by Meta&apos;s privacy policy.
+              </p>
+              <p>
+                <span className="text-white">Data deletion:</span> because this data is processed
+                transiently to check entitlement and is not stored on our servers, no copy remains
+                with us after verification. You can stop this processing at any time by uninstalling
+                the Meta Horizon Store version of the app. If you believe we hold any data associated
+                with you, you can request its deletion as described in the{' '}
+                <span className="text-white">Your rights and data deletion</span> section below.
               </p>
             </Section>
 
