@@ -21,7 +21,8 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 
-const DOWNLOAD_URL = 'https://downloads.gamenative.app/releases/1.0.0/gamenative-v1.0.0.apk'
+const DOWNLOAD_URL = 'https://downloads.gamenative.app/releases/1.1.0/gamenative-v1.1.0.apk'
+const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=app.gamenative'
 const GITHUB_URL = 'https://github.com/utkarshdalal/GameNative'
 const DISCORD_URL = 'https://discord.gg/2hKv4VfZfE'
 const KOFI_URL = 'https://ko-fi.com/gamenative'
@@ -30,7 +31,25 @@ const LINKEDIN_URL = 'https://www.linkedin.com/company/gamenative'
 const CONTACT_EMAIL = 'utkarsh@gamenative.app'
 const CONTACT_URL = `mailto:${CONTACT_EMAIL}`
 
-const testimonials = [
+/** Google Play "triangle" glyph, monochrome so it inherits the button's text color. */
+function GooglePlayIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
+      <path d="M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202a1.49 1.49 0 0 1 0 2.594zM1.337.924a1.486 1.486 0 0 0-.112.568v21.017c0 .217.045.419.124.6l11.155-11.087L1.337.924zm12.207 10.065l3.258-3.238L3.45.195a1.466 1.466 0 0 0-.946-.179l11.04 10.973zm0 2.067l-11 10.933c.298.036.612-.016.906-.183l13.324-7.54-3.23-3.21z" />
+    </svg>
+  )
+}
+
+type Testimonial = {
+  name: string
+  subscribers: string
+  avatar: string
+  url: string
+  quote: string
+  note?: string
+}
+
+const testimonials: Testimonial[] = [
   {
     name: 'ETA PRIME',
     subscribers: '1.38M subscribers',
@@ -52,8 +71,7 @@ const testimonials = [
     subscribers: '827K subscribers',
     avatar: '/creators/retrogamecorps.jpg',
     url: 'https://www.youtube.com/watch?v=a9ZlYhgnI-g',
-    quote:
-      'It almost feels like I’m cheating… I shouldn’t be able to play these games so well.',
+    quote: 'It almost feels like I’m cheating… I shouldn’t be able to play these games so well.',
   },
   {
     name: 'Tech Dweeb',
@@ -62,6 +80,14 @@ const testimonials = [
     url: 'https://www.youtube.com/watch?v=QqIChmAu2_A',
     quote:
       'PC games on your Android doodads is a dream come true… thanks to a lovely new app called GameNative.',
+  },
+  {
+    name: 'Léo — TechMaker',
+    subscribers: '2.5M subscribers',
+    avatar: '/creators/leotechmaker.jpg',
+    url: 'https://youtu.be/Hcja3O9jVkc',
+    quote: 'The one that crushed them all… GameNative has become the gold standard.',
+    note: 'Translated from French',
   },
 ]
 
@@ -79,10 +105,18 @@ const press = [
     quote: 'Genuinely very good… I was impressed… I can tell you GameNative works.',
     url: 'https://www.androidpolice.com/played-dark-souls-on-smartphone-went-better-than-i-thought/',
   },
+  {
+    name: 'XDA Developers',
+    logo: '/press/xda.svg',
+    quote:
+      'GameNative is the best option out there for PC gaming on your phone, and it’s an incredible achievement.',
+    url: 'https://www.xda-developers.com/steam-client-hurting-pc-gaming-android-valve-vr-headset-accidentally-solved-it/',
+  },
 ]
 
-const loveImages = Array.from({ length: 29 }, (_, i) =>
-  `/love/love-${String(i + 1).padStart(2, '0')}.jpg`,
+const loveImages = Array.from(
+  { length: 29 },
+  (_, i) => `/love/love-${String(i + 1).padStart(2, '0')}.jpg`,
 )
 
 /**
@@ -441,7 +475,7 @@ function CreatorReviews() {
         <p className="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl">
           Recommended by creators with{' '}
           <span className="bg-gradient-to-r from-purple-300 to-cyan-300 bg-clip-text text-transparent">
-            3.4M+ subscribers
+            5.9M+ subscribers
           </span>
         </p>
       </div>
@@ -457,7 +491,11 @@ function CreatorReviews() {
             target="_blank"
             rel="noopener noreferrer"
             style={{ opacity: 0 }}
-            className="group flex h-full flex-col rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-6 will-change-transform transition-colors hover:border-white/25"
+            className={`group flex h-full flex-col rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-6 will-change-transform transition-colors hover:border-white/25 ${
+              i === testimonials.length - 1 && testimonials.length % 2 === 1
+                ? 'sm:col-span-2 sm:mx-auto sm:w-[calc(50%-0.625rem)]'
+                : ''
+            }`}
           >
             <div className="flex items-center gap-3">
               <img
@@ -476,7 +514,10 @@ function CreatorReviews() {
 
             <div className="mt-5 flex flex-1 gap-3">
               <Quote className="h-5 w-5 shrink-0 text-purple-400/60" />
-              <p className="text-[15px] leading-relaxed text-gray-200">{t.quote}</p>
+              <div>
+                <p className="text-[15px] leading-relaxed text-gray-200">{t.quote}</p>
+                {t.note && <p className="mt-1.5 text-xs italic text-gray-500">{t.note}</p>}
+              </div>
             </div>
 
             <div className="mt-5 inline-flex items-center gap-1.5 text-xs font-medium text-cyan-300/80 transition-colors group-hover:text-cyan-300">
@@ -629,10 +670,7 @@ export default function GameNativePage() {
       </div>
 
       {/* Nav */}
-      <header
-        className="gn-color-in relative z-20"
-        style={{ animationDelay: '650ms' }}
-      >
+      <header className="gn-color-in relative z-20" style={{ animationDelay: '650ms' }}>
         <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
           <Link href="/" className="flex items-center gap-3">
             <img
@@ -718,7 +756,7 @@ export default function GameNativePage() {
           </p>
 
           <div
-            className="gn-assemble relative z-10 mt-10 flex w-full flex-col items-center justify-center gap-3 sm:flex-row"
+            className="gn-assemble relative z-10 mt-10 flex w-full flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap"
             style={{ animationDelay: '2800ms' }}
           >
             <Button
@@ -728,7 +766,22 @@ export default function GameNativePage() {
             >
               <a href={DOWNLOAD_URL}>
                 <Download className="mr-2 h-5 w-5" />
-                Download for Android
+                Download APK
+              </a>
+            </Button>
+
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="w-full border-white/15 bg-white/5 px-8 text-base font-semibold text-white backdrop-blur transition-colors hover:bg-white/10 hover:text-white sm:w-auto"
+            >
+              <a href={PLAY_STORE_URL} target="_blank" rel="noopener noreferrer">
+                <GooglePlayIcon className="mr-2 h-5 w-5" />
+                Get it on Google Play
+                <span className="ml-2 rounded-full border border-white/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gray-400">
+                  Beta
+                </span>
               </a>
             </Button>
 
@@ -749,7 +802,7 @@ export default function GameNativePage() {
             className="gn-assemble relative z-10 mt-5 text-sm text-gray-500"
             style={{ animationDelay: '3200ms' }}
           >
-            Open source · v1.0.0 · Android APK install
+            Open source · v1.1.0 · Android APK install
           </p>
 
           <div
@@ -841,13 +894,17 @@ export default function GameNativePage() {
             As featured in
           </h2>
           <div className="grid gap-5 sm:grid-cols-2">
-            {press.map((p) => (
+            {press.map((p, i) => (
               <a
                 key={p.name}
                 href={p.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex h-full flex-col rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-6 transition-colors hover:border-white/25"
+                className={`group flex h-full flex-col rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-6 transition-colors hover:border-white/25 ${
+                  i === press.length - 1 && press.length % 2 === 1
+                    ? 'sm:col-span-2 sm:mx-auto sm:w-[calc(50%-0.625rem)]'
+                    : ''
+                }`}
               >
                 <img
                   src={p.logo}
@@ -885,7 +942,7 @@ export default function GameNativePage() {
               GameNative is open source. Get the app, download your games and start playing.
             </p>
 
-            <div className="relative mt-8 flex w-full flex-col items-center justify-center gap-3 sm:flex-row">
+            <div className="relative mt-8 flex w-full flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
               <Button
                 asChild
                 size="lg"
@@ -893,7 +950,21 @@ export default function GameNativePage() {
               >
                 <a href={DOWNLOAD_URL}>
                   <Download className="mr-2 h-5 w-5" />
-                  Download for Android
+                  Download APK
+                </a>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="w-full border-white/15 bg-white/5 px-8 text-base font-semibold text-white backdrop-blur transition-colors hover:bg-white/10 hover:text-white sm:w-auto"
+              >
+                <a href={PLAY_STORE_URL} target="_blank" rel="noopener noreferrer">
+                  <GooglePlayIcon className="mr-2 h-5 w-5" />
+                  Get it on Google Play
+                  <span className="ml-2 rounded-full border border-white/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gray-400">
+                    Beta
+                  </span>
                 </a>
               </Button>
               <Button
@@ -939,14 +1010,25 @@ export default function GameNativePage() {
                 <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Product
                 </span>
-                <Link href="/compatibility" className="text-gray-300 transition-colors hover:text-white">
+                <Link
+                  href="/compatibility"
+                  className="text-gray-300 transition-colors hover:text-white"
+                >
                   Compatibility
                 </Link>
                 <Link href="/drivers" className="text-gray-300 transition-colors hover:text-white">
                   Graphics Drivers
                 </Link>
                 <a href={DOWNLOAD_URL} className="text-gray-300 transition-colors hover:text-white">
-                  Download
+                  Download APK
+                </a>
+                <a
+                  href={PLAY_STORE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-300 transition-colors hover:text-white"
+                >
+                  Google Play (beta)
                 </a>
               </div>
               <div className="flex flex-col gap-3">
