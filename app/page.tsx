@@ -21,7 +21,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 
-const DOWNLOAD_URL = 'https://downloads.gamenative.app/releases/1.2.0/gamenative-v1.2.0.apk'
+const DOWNLOAD_URL = 'https://downloads.gamenative.app/releases/1.2.1/gamenative-v1.2.1.apk'
 const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=app.gamenative'
 const GITHUB_URL = 'https://github.com/utkarshdalal/GameNative'
 const DISCORD_URL = 'https://discord.gg/2hKv4VfZfE'
