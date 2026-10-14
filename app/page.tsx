@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import {
-  Download,
   MessageCircle,
   Coffee,
   Wrench,
@@ -21,7 +20,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 
-const DOWNLOAD_URL = 'https://downloads.gamenative.app/releases/1.2.1/gamenative-v1.2.1.apk'
+const DOWNLOAD_URL = 'https://downloads.gamenative.app/releases/1.3.0/gamenative-v1.3.0.apk'
 const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=app.gamenative'
 const GITHUB_URL = 'https://github.com/utkarshdalal/GameNative'
 const DISCORD_URL = 'https://discord.gg/2hKv4VfZfE'
@@ -714,9 +713,9 @@ export default function GameNativePage() {
             size="sm"
             className="bg-gradient-to-r from-purple-600 to-cyan-500 font-semibold text-white shadow-lg shadow-purple-500/30 hover:opacity-90"
           >
-            <a href={DOWNLOAD_URL}>
-              <Download className="mr-1.5 h-4 w-4" />
-              Download
+            <a href={PLAY_STORE_URL} target="_blank" rel="noopener noreferrer">
+              <GooglePlayIcon className="mr-1.5 h-4 w-4" />
+              Get the app
             </a>
           </Button>
         </nav>
@@ -764,24 +763,9 @@ export default function GameNativePage() {
               size="lg"
               className="w-full bg-gradient-to-r from-purple-600 to-cyan-500 px-8 text-base font-semibold text-white shadow-lg shadow-purple-500/30 transition-opacity hover:opacity-90 sm:w-auto"
             >
-              <a href={DOWNLOAD_URL}>
-                <Download className="mr-2 h-5 w-5" />
-                Download APK
-              </a>
-            </Button>
-
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="w-full border-white/15 bg-white/5 px-8 text-base font-semibold text-white backdrop-blur transition-colors hover:bg-white/10 hover:text-white sm:w-auto"
-            >
               <a href={PLAY_STORE_URL} target="_blank" rel="noopener noreferrer">
                 <GooglePlayIcon className="mr-2 h-5 w-5" />
                 Get it on Google Play
-                <span className="ml-2 rounded-full border border-white/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gray-400">
-                  Beta
-                </span>
               </a>
             </Button>
 
@@ -802,7 +786,13 @@ export default function GameNativePage() {
             className="gn-assemble relative z-10 mt-5 text-sm text-gray-500"
             style={{ animationDelay: '3200ms' }}
           >
-            Open source · v1.2.0 · Android APK install
+            Open source · v1.3.0 · No Google Play?{' '}
+            <a
+              href={DOWNLOAD_URL}
+              className="underline underline-offset-2 transition-colors hover:text-gray-300"
+            >
+              Download the APK
+            </a>
           </p>
 
           <div
@@ -948,23 +938,9 @@ export default function GameNativePage() {
                 size="lg"
                 className="w-full bg-gradient-to-r from-purple-600 to-cyan-500 px-8 text-base font-semibold text-white shadow-lg shadow-purple-500/30 transition-opacity hover:opacity-90 sm:w-auto"
               >
-                <a href={DOWNLOAD_URL}>
-                  <Download className="mr-2 h-5 w-5" />
-                  Download APK
-                </a>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="w-full border-white/15 bg-white/5 px-8 text-base font-semibold text-white backdrop-blur transition-colors hover:bg-white/10 hover:text-white sm:w-auto"
-              >
                 <a href={PLAY_STORE_URL} target="_blank" rel="noopener noreferrer">
                   <GooglePlayIcon className="mr-2 h-5 w-5" />
                   Get it on Google Play
-                  <span className="ml-2 rounded-full border border-white/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gray-400">
-                    Beta
-                  </span>
                 </a>
               </Button>
               <Button
@@ -981,7 +957,13 @@ export default function GameNativePage() {
             </div>
 
             <p className="relative mt-5 text-sm text-gray-500">
-              Open source · Android · APK install
+              Open source · Android · No Google Play?{' '}
+              <a
+                href={DOWNLOAD_URL}
+                className="underline underline-offset-2 transition-colors hover:text-gray-300"
+              >
+                Download the APK
+              </a>
             </p>
           </div>
         </section>
@@ -1019,16 +1001,16 @@ export default function GameNativePage() {
                 <Link href="/drivers" className="text-gray-300 transition-colors hover:text-white">
                   Graphics Drivers
                 </Link>
-                <a href={DOWNLOAD_URL} className="text-gray-300 transition-colors hover:text-white">
-                  Download APK
-                </a>
                 <a
                   href={PLAY_STORE_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-300 transition-colors hover:text-white"
                 >
-                  Google Play (beta)
+                  Google Play
+                </a>
+                <a href={DOWNLOAD_URL} className="text-gray-300 transition-colors hover:text-white">
+                  Download APK
                 </a>
               </div>
               <div className="flex flex-col gap-3">
