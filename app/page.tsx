@@ -20,7 +20,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 
-const DOWNLOAD_URL = 'https://downloads.gamenative.app/releases/1.3.0/gamenative-v1.3.0.apk'
+const DOWNLOAD_URL = 'https://downloads.gamenative.app/releases/1.4.0/gamenative-v1.4.0.apk'
 const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=app.gamenative'
 const GITHUB_URL = 'https://github.com/utkarshdalal/GameNative'
 const DISCORD_URL = 'https://discord.gg/2hKv4VfZfE'
@@ -786,7 +786,7 @@ export default function GameNativePage() {
             className="gn-assemble relative z-10 mt-5 text-sm text-gray-500"
             style={{ animationDelay: '3200ms' }}
           >
-            Open source · v1.3.0 · No Google Play?{' '}
+            Open source · v1.4.0 · No Google Play?{' '}
             <a
               href={DOWNLOAD_URL}
               className="underline underline-offset-2 transition-colors hover:text-gray-300"
