@@ -20,32 +20,60 @@ if (!URL_ || !KEY) {
 const PAGE = 1000
 const MIN_SESSIONS = 5 // rows below this cannot produce a verdict at their own tier
 
+async function get(path) {
+  // Retry transient failures (statement timeouts, 5xx) a few times before giving up.
+  for (let attempt = 1; ; attempt++) {
+    const res = await fetch(`${URL_}/rest/v1/${path}`, {
+      headers: { apikey: KEY, Authorization: `Bearer ${KEY}` },
+    })
+    if (res.ok) return res.json()
+    const body = await res.text()
+    if (attempt >= 4 || res.status < 500) throw new Error(`${path}: HTTP ${res.status} ${body}`)
+    await new Promise((r) => setTimeout(r, attempt * 3000))
+  }
+}
+
+/** Small tables: plain limit/offset paging. */
 async function fetchAll(path) {
   const rows = []
   for (let offset = 0; ; offset += PAGE) {
     const sep = path.includes('?') ? '&' : '?'
-    const res = await fetch(`${URL_}/rest/v1/${path}${sep}limit=${PAGE}&offset=${offset}`, {
-      headers: { apikey: KEY, Authorization: `Bearer ${KEY}` },
-    })
-    if (!res.ok) throw new Error(`${path} @${offset}: HTTP ${res.status} ${await res.text()}`)
-    const page = await res.json()
+    const page = await get(`${path}${sep}limit=${PAGE}&offset=${offset}`)
     for (const r of page) rows.push(r)
     if (page.length < PAGE) return rows
-    if (offset % 20000 === 0) console.log(`  ${path.split('?')[0]}: ${rows.length}…`)
   }
 }
 
-const enough = `or=(old_n.gte.${MIN_SESSIONS},strict_n.gte.${MIN_SESSIONS})`
-const order = 'order=game_id,kind,key'
+/**
+ * game_compat_tiers is large, and deep OFFSETs time out. Page by position instead: each
+ * request asks for the rows after the last (game_id, key) seen, which the index answers directly.
+ */
+async function fetchTiers(kind, filter) {
+  const rows = []
+  let after = ''
+  for (;;) {
+    const page = await get(
+      `game_compat_tiers?select=*&kind=eq.${kind}${filter}${after}&order=game_id,key&limit=${PAGE}`,
+    )
+    for (const r of page) rows.push(r)
+    if (page.length < PAGE) return rows
+    const last = page[page.length - 1]
+    const key = `"${String(last.key).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+    after = `&and=(or(game_id.gt.${last.game_id},and(game_id.eq.${last.game_id},key.gt.${encodeURIComponent(key)})))`
+    if (rows.length % 20000 === 0) console.log(`  ${kind}: ${rows.length}…`)
+  }
+}
+
+const enough = `&or=(old_n.gte.${MIN_SESSIONS},strict_n.gte.${MIN_SESSIONS})`
 
 const tiers = []
 for (const kind of ['model', 'gpu', 'family']) {
-  const rows = await fetchAll(`game_compat_tiers?select=*&kind=eq.${kind}&${enough}&${order}`)
+  const rows = await fetchTiers(kind, enough)
   console.log(`${kind}: ${rows.length} rows`)
   for (const r of rows) tiers.push(r)
 }
 // 'all' rows are needed unfiltered: they carry the per-game fallback and rating cap.
-const all = await fetchAll(`game_compat_tiers?select=*&kind=eq.all&${order}`)
+const all = await fetchTiers('all', '')
 console.log(`all: ${all.length} rows`)
 for (const r of all) tiers.push(r)
 
