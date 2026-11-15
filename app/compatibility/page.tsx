@@ -70,6 +70,15 @@ export default function CompatibilityPage() {
           <p className="text-gray-300 text-lg">
             See if your game will work on your device using GameNative or Winlator
           </p>
+          <p className="mt-2 text-gray-400">
+            Want a summary for your phone or GPU instead?{' '}
+            <a
+              href="/will-it-run/"
+              className="text-cyan-400 underline underline-offset-2 hover:text-cyan-300"
+            >
+              Will GameNative run on my phone?
+            </a>
+          </p>
         </div>
 
         {/* Filters */}

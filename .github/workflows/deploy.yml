@@ -5,6 +5,9 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  schedule:
+    - cron: "0 5 * * *" # daily: rebuild the /will-it-run pages from fresh data
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -31,6 +34,24 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Refreshes data/compat-*.json from the database. Without the secrets (forks, or
+      # before they are set) or if the export fails, the build uses the committed snapshot.
+      - name: Refresh compatibility data
+        if: github.event_name != 'pull_request'
+        continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.COMPAT_SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.COMPAT_SUPABASE_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_KEY" ]; then
+            echo "::warning::COMPAT_SUPABASE_URL / COMPAT_SUPABASE_KEY not set; using the committed snapshot"
+            exit 0
+          fi
+          node scripts/export-compat-tiers.mjs && node scripts/build-will-it-run-data.mjs || {
+            echo "::warning::Compatibility refresh failed; using the committed snapshot"
+            git checkout -- data/
+          }
+
       - name: Build
         run: pnpm run build
 
@@ -42,3 +63,4 @@ jobs:
           publish_dir: ./out
           cname: gamenative.app
           enable_jekyll: false
+          force_orphan: true # keep one commit on gh-pages; daily rebuilds would otherwise bloat the repo
