@@ -11,6 +11,7 @@ const bricolage = Bricolage_Grotesque({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://gamenative.app'),
   title: 'GameNative - Play Steam, Epic & GOG Games on Android',
   description:
     'Play your favorite PC games from Steam, Epic and GOG directly on your phone or handheld—no cloud PCs, no subscriptions, no lag. Just your games, running locally.',

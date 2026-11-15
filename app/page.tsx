@@ -684,6 +684,9 @@ export default function GameNativePage() {
             <Link href="/compatibility" className="transition-colors hover:text-white">
               Compatibility
             </Link>
+            <a href="/will-it-run/" className="transition-colors hover:text-white">
+              Will it run on my phone?
+            </a>
             <Link href="/drivers" className="transition-colors hover:text-white">
               Graphics Drivers
             </Link>
@@ -998,6 +1001,12 @@ export default function GameNativePage() {
                 >
                   Compatibility
                 </Link>
+                <a
+                  href="/will-it-run/"
+                  className="text-gray-300 transition-colors hover:text-white"
+                >
+                  Will it run on my phone?
+                </a>
                 <Link href="/drivers" className="text-gray-300 transition-colors hover:text-white">
                   Graphics Drivers
                 </Link>
